@@ -1,2 +1,5 @@
 # Python compiled code
 *.py[cod]
+
+# Python virtual environment
+venv/
