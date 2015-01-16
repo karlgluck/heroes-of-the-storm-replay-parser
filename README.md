@@ -34,4 +34,4 @@ Once installation is complete, start up the server and test it using Foreman (th
 foreman start web
 ```
 
-If you visit `http://localhost:5000` with your browser, the app will now be running. If you're running inside a virtual machine like I suggested, only the browser inside the VM will resolve localhost. It is possible to access the server from your host computer but that is outside the scope of this tutorial.
+If you visit `http://localhost:5000` with your browser, the app will now be running. If you're running inside a virtual machine like I suggested, only the browser inside the VM will resolve localhost. It is possible to access the server from your host computer by using `ifconfig` to find the VM's ip address and typing `[ip]:5000` into the host's browser's address bar.
