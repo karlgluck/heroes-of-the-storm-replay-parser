@@ -11,6 +11,10 @@ This project is based on code from:
 
 Special thanks to Ben of [HOTS Logs](http://www.hotslogs.com) for helping me figure out the new GameEvents format!
 
+## SECURITY WARNING
+
+This code is currently insecure because it is in Django developer mode. Fix this before deploying anywhere public.
+
 
 ## Setup
 
