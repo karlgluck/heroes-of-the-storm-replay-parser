@@ -100,7 +100,7 @@ typeinfos = [
     ('_struct',[[('x',73,-2),('y',73,-1)]]),  #74
     ('_struct',[[('m_which',12,-2),('m_target',74,-1)]]),  #75
     ('_struct',[[('m_fileName',26,-5),('m_automatic',13,-4),('m_overwrite',13,-3),('m_name',9,-2),('m_description',25,-1)]]),  #76
-    ('_int',[(-2147483648,32)]),  #77
+    ('_int',[(-2147483648,32)]),  #77 THIS MIGHT BE 31 BIT INSTEAD OF 32
     ('_struct',[[('x',77,-2),('y',77,-1)]]),  #78
     ('_struct',[[('m_point',78,-4),('m_time',77,-3),('m_verb',25,-2),('m_arguments',25,-1)]]),  #79
     ('_struct',[[('m_data',79,-1)]]),  #80
@@ -109,9 +109,9 @@ typeinfos = [
     ('_optional',[82]),  #83
     ('_null',[]),  #84
     ('_struct',[[('x',81,-3),('y',81,-2),('z',77,-1)]]),  #85
-    ('_struct',[[('m_targetUnitFlags',10,-7),('m_timer',10,-6),('m_tag',6,-5),('m_snapshotUnitLink',73,-4),('m_snapshotControlPlayerId',54,-3),('m_snapshotUpkeepPlayerId',54,-2),('m_snapshotPoint',85,-1)]]),  #86
+    ('_struct',[[('m_targetUnitFlags',73,-7), ('m_timer',10,-6), ('m_tag',6,-5), ('m_snapshotUnitLink',73,-4), ('m_snapshotControlPlayerId',54,-3), ('m_snapshotUpkeepPlayerId',54,-2), ('m_snapshotPoint',85,-1)]]),  #86
     ('_choice',[(0,2),{0:('None',84),1:('TargetPoint',85),2:('TargetUnit',86),3:('Data',6)}]),  #87
-    ('_struct',[[('m_cmdFlags',81,-4),('m_abil',83,-3),('m_data',87,-2),('m_otherUnit',39,-1)]]),  #88
+    ('_struct',[[('m_uint22',5,-5), ('m_abil',83,-4), ('m_data',87,-3), ('m_otherUnit',39,-2), ('m_uint32',39,-1)]]),  #88
     ('_int',[(0,9)]),  #89
     ('_bitarray',[(0,9)]),  #90
     ('_array',[(0,9),89]),  #91
