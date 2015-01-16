@@ -12,7 +12,7 @@ class StormReplayParser:
         self.buildStormReplay = protocol15405.decode_replay_header(self.mpq.header['user_data_header']['content'])['m_version']['m_baseBuild']
 
         try:
-            self.protocol = __import__('s2protocol' + '.protocol%s' % self.buildS2Protocol, fromlist=['protocol2'])
+            self.protocol = __import__('s2protocol' + '.protocol%s' % self.buildStormReplay, fromlist=['protocol2'])
         except ImportError:
             raise Exception('Unsupported build number: %i' % self.buildStormReplay)
 
@@ -21,7 +21,7 @@ class StormReplayParser:
         try:
             return self.matchId
         except AttributeError:
-            self.gameId = "todo"
+            self.matchId = "todo"
             return self.matchId
 
     def getReplayInitData(self):
@@ -111,9 +111,9 @@ class StormReplayParser:
                     continue
                 userId = messageEvent['_userid']['m_userId']
                 chatData = {
-                    'timestamp': self.getMatchUTCTimestamp() + messageEvent['_gameloop'] / 16,
+                    't': self.getMatchUTCTimestamp() + messageEvent['_gameloop'] / 16,
                     'user': userId,
-                    'string': messageEvent['m_string'],
+                    'msg': messageEvent['m_string'],
                 }
                 self.chat.append(chatData)
             return self.chat

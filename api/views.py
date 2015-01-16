@@ -3,6 +3,9 @@ from django.http import HttpResponse
 
 import requests
 import os
+import json
+
+from StormReplayParser import StormReplayParser
 
 def index(request):
     if request.method == "POST":
@@ -10,15 +13,15 @@ def index(request):
             content = json.dumps({'error':'Missing "file" parameter with uploaded replay file data'})
         else:
             replayFile = request.FILES.get('file')
-            srp = StormReplayParser(replayFile)      # this returns an UploadedFile, which has a 'read' member function as required by mpyq
+            srp = StormReplayParser(replayFile)
             content = json.dumps({
-                #'game_id': srp.getGameId(),
-                #'map': srp.getMapName(),
-                #'players': srp.getReplayPlayers(),
-                #'chat': srp.getChat(),
-                'game': srp.getReplayGameEventsDebug(),
+                'unique_match_id': srp.getUniqueMatchId(),
+                'map': srp.getMapName(),
+                'players': srp.getReplayPlayers(),
+                'chat': srp.getChat(),
+                #'game': srp.getReplayGameEventsDebug(),
             })
         return HttpResponse(content, content_type="application/json")
 
-    return render(request, 'file-upload.html', {})
+    return render(request, 'api/file-upload.html', {})
 
