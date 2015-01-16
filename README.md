@@ -7,5 +7,8 @@ This code is built to be deployed to a Heroku instance, but can be run locally w
 This project is based on code from:
  * [S2Protocol](https://github.com/Blizzard/s2protocol)
  * [SC2Reader](http://sc2reader.readthedocs.org/en/latest/)
+ * [mpyq](https://github.com/eagleflo/mpyq)
 
 Special thanks to Ben of [HOTS Logs](http://www.hotslogs.com) for helping me figure out the new GameEvents format!
+
+
