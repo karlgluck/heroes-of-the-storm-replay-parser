@@ -77,8 +77,8 @@ typeinfos = [
     ('_struct',[[('m_allowedColors',47,-6),('m_allowedRaces',48,-5),('m_allowedDifficulty',47,-4),('m_allowedControls',48,-3),('m_allowedObserveTypes',49,-2),('m_allowedAIBuilds',50,-1)]]),  #51
     ('_array',[(0,5),51]),  #52
     ('_struct',[[('m_randomValue',6,-26),('m_gameCacheName',25,-25),('m_gameOptions',44,-24),('m_gameSpeed',12,-23),('m_gameType',12,-22),('m_maxUsers',2,-21),('m_maxObservers',2,-20),('m_maxPlayers',2,-19),('m_maxTeams',45,-18),('m_maxColors',3,-17),('m_maxRaces',46,-16),('m_maxControls',10,-15),('m_mapSizeX',10,-14),('m_mapSizeY',10,-13),('m_mapFileSyncChecksum',6,-12),('m_mapFileName',26,-11),('m_mapAuthorName',9,-10),('m_modFileSyncChecksum',6,-9),('m_slotDescriptions',52,-8),('m_defaultDifficulty',3,-7),('m_defaultAIBuild',0,-6),('m_cacheHandles',32,-5),('m_hasExtensionMod',13,-4),('m_isBlizzardMap',13,-3),('m_isPremadeFFA',13,-2),('m_isCoopMode',13,-1)]]),  #53
-    ('_optional',[1]),  #54
-    ('_optional',[2]),  #55
+    ('_optional',[1]),  #54 - optional 4 bit
+    ('_optional',[2]),  #55 - optional 5 bit
     ('_struct',[[('m_color',55,-1)]]),  #56
     ('_array',[(0,6),6]),  #57
     ('_array',[(0,9),6]),  #58
@@ -94,7 +94,7 @@ typeinfos = [
     ('_struct',[[('m_type',6,-3),('m_name',65,-2),('m_data',30,-1)]]),  #68
     ('_array',[(0,5),10]),  #69
     ('_struct',[[('m_signature',69,-2),('m_toonHandle',16,-1)]]),  #70
-    ('_struct',[[('m_gameFullyDownloaded',13,-8),('m_developmentCheatsEnabled',13,-7),('m_multiplayerCheatsEnabled',13,-6),('m_syncChecksummingEnabled',13,-5),('m_isMapToMapTransition',13,-4),('m_startingRally',13,-3),('m_debugPauseEnabled',13,-2),('m_baseBuildNum',6,-1)]]),  #71
+    ('_struct',[[ ('m_bool0',13,-11), ('m_bool1',13,-10), ('m_bool2',13,-9), ('m_bool3',13,-8), ('m_bool4',13,-7), ('m_bool5',13,-6), ('m_bool6',13,-5), ('m_bool7',13,-4), ('m_bool8',13,-3), ('m_bool9',13,-2), ('m_data',178,-1)]]),  #71
     ('_struct',[[]]),  #72
     ('_int',[(0,16)]),  #73
     ('_struct',[[('x',73,-2),('y',73,-1)]]),  #74
@@ -201,6 +201,7 @@ typeinfos = [
     ('_array',[(0,10),77]),  #175
     ('_struct',[[('m_firstUnitIndex',6,0),('m_items',175,1)]]),  #176
     ('_struct',[[('m_playerId',1,0),('m_type',6,1),('m_userId',39,2),('m_slotId',39,3)]]),  #177
+    ('_struct',[[('m_uint32_0',6,-4),('m_uint32_1',6,-3),('m_uint32_2',6,-2),('m_string',16,-1)]]),  #178 - struct in 71, 3 32-bit integers and a string with length specified by 7-bit int
 ]
 
 # Map from protocol NNet.Game.*Event eventid to (typeid, name)

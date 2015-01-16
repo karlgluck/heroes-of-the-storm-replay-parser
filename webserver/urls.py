@@ -12,7 +12,8 @@ urlpatterns = patterns('',
     # url(r'^blog/', include('blog.urls')),
 
     url(r'^$', hello.views.index, name='index'),
-    url(r'^api', api.views.index, name='index'),
+    url(r'^api$', api.views.index, name='index'),
+    url(r'^api-debug$', api.views.debug, name='debug'),
 
 
 )
