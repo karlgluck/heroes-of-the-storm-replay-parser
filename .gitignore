@@ -1,5 +1,8 @@
 # Python compiled code
 *.py[cod]
 
+# Swap files from Gvim
+*.swp
+
 # Python virtual environment
 venv/

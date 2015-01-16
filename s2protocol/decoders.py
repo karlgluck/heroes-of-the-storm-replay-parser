@@ -42,6 +42,34 @@ class BitPackedBuffer:
             self._nextbits and self._next or 0, self._nextbits,
             self._used, '%02x' % (ord(self._data[self._used]),) if (self._used < len(self._data)) else '--')
 
+    def copy(self, other):
+        self._data = other._data
+        self._used = other._used
+        self._next = other._next
+        self._nextbits = other._nextbits
+        self._bigendian = other._bigendian
+
+    def peek_bytes_as_hex_string(self, bytes=0):
+        if bytes == 0:
+            bytes = len(self._data)
+        bpb = BitPackedBuffer([], self._bigendian)
+        bpb.copy(self)
+        return ''.join('{:02x}'.format(ord(x)) for x in bpb.read_unaligned_bytes(bytes))
+
+    def peek_bytes_as_bin_string(self, bytes=0):
+        if bytes == 0:
+            bytes = len(self._data)
+        bpb = BitPackedBuffer([], self._bigendian)
+        bpb.copy(self)
+        return ''.join('{:08b}'.format(ord(x)) for x in bpb.read_unaligned_bytes(bytes))
+
+    def peek_bits_as_bin_string(self, bits=0):
+        if bits == 0:
+            bits = len(self._data) * 8
+        bpb = BitPackedBuffer([], self._bigendian)
+        bpb.copy(self)
+        return ('{:0%ib}'%bits).format(bpb.read_bits(bits))
+
     def done(self):
         return self._nextbits == 0 and self._used >= len(self._data)
 
@@ -58,6 +86,9 @@ class BitPackedBuffer:
         if len(data) != bytes:
             raise TruncatedError(self)
         return data
+
+    def state(self):
+        return '{next=%i,nextbits=%i,used=%i}' % (self._next, self._nextbits, self._used)
 
     def read_bits(self, bits):
         result = 0
@@ -163,6 +194,202 @@ class BitPackedDecoder:
             else:
                 result[field[0]] = self.instance(field[1])
         return result
+
+
+
+
+class BitPackedDecoderDebug:
+    def __init__(self, contents, typeinfos):
+        self._buffer = BitPackedBuffer(contents)
+        self._typeinfos = typeinfos
+        self._markers = []
+        self._json = {}
+
+    def __str__(self):
+        return self._buffer.__str__()
+
+    def peek_bytes_as_hex_string(self, bytes):
+        return self._buffer.peek_bytes_as_hex_string(bytes)
+
+    def peek_bytes_as_bin_string(self, bytes=0):
+        return self._buffer.peek_bytes_as_bin_string(bytes)
+
+    def space_binary_string_by_markers(self, bin_string, first_bit_index):
+        retval = ''
+        x = 0
+        while x < len(bin_string):
+            for m in self._markers:
+                if m['at'] == (first_bit_index + x):
+                    retval = retval + '{' + m['type'] + '}'
+            retval = retval + bin_string[x]
+            x += 1
+        for m in self._markers:
+            if m['at'] == (first_bit_index + x):
+                retval = retval + '{' + m['type'] + '}'
+        return retval
+
+    def get_json_and_reset(self):
+        retval = self._json
+        self._json = {}
+        return retval
+
+    def instance(self, typeid):
+        used_bits = self._buffer.used_bits()
+        self._markers.append({'at':self.used_bits(),'type':'instance(%i)'%typeid})
+        old_json = self._json
+        self._json = {'bit_start': self.used_bits(), 'typeid': typeid}
+        if typeid >= len(self._typeinfos):
+            return {"ERROR":"Asked to instance typeid '%i' but there are only '%i' type IDs" % (typeid, len(self._typeinfos)), "hex": hex_string }
+        typeinfo = self._typeinfos[typeid]
+        retval = getattr(self, typeinfo[0])(*typeinfo[1])
+        self._json['bit_end']  = self.used_bits()
+        old_json['instance%i'%self.used_bits()] = self._json
+        self._json = old_json
+        self._markers.append({'at':self.used_bits(),'type':'end-instance(%i)'%typeid})
+        return retval
+
+    def byte_align(self):
+        self._buffer.byte_align()
+
+    def done(self):
+        return self._buffer.done()
+
+    def used_bits(self):
+        return self._buffer.used_bits()
+
+    def _array(self, bounds, typeid):
+        self._markers.append({'at':self.used_bits(),'type':'array(%s,%s)'%(str(bounds),str(typeid))})
+        old_json = self._json
+        self._json = {'bit_start': self.used_bits(), 'bounds': bounds, 'typeid': typeid}
+        length = self._int(bounds)
+        self._json['length'] = length
+        retval = [self.instance(typeid) for i in xrange(length)]
+        old_json['array%i' % self.used_bits()] = self._json
+        self._json = old_json
+        return retval
+
+    def _bitarray(self, bounds):
+        self._markers.append({'at':self.used_bits(),'type':'bitarray(%s)'%str(bounds)})
+        old_json = self._json
+        self._json = {'bit_start': self.used_bits(), 'bounds': bounds}
+        length = self._int(bounds)
+        self._json['bits'] = self._buffer.peek_bits_as_bin_string(length)
+        retval = (length, self._buffer.read_bits(length))
+        old_json['bitarray%i'%self.used_bits()] = self._json
+        self._json = old_json
+        return retval
+
+    def _blob(self, bounds):
+        self._markers.append({'at':self.used_bits(),'type':'blob(%s)'%str(bounds)})
+        old_json = self._json
+        self._json = {'bit_start': self.used_bits(), 'bounds': bounds}
+        length = self._int(bounds)
+        self._json['length'] = length
+        retval = self._buffer.read_aligned_bytes(length)
+        self._json['bytes'] = ''.join('{:02x}'.format(ord(x)) for x in retval)
+        old_json['blob%i'%self.used_bits()] = self._json
+        self._json = old_json
+        return retval
+
+    def _bool(self):
+        old_json = self._json
+        self._json = {'bit_start': self.used_bits()}
+        self._markers.append({'at':self.used_bits(),'type':'bool'})
+        retval = self._int((0, 1)) != 0
+        self._json['value'] = retval
+        old_json['bool%i'%self.used_bits()] = self._json
+        self._json = old_json
+        return retval
+
+    def _choice(self, bounds, fields):
+        self._markers.append({'at':self.used_bits(),'type':'choice(%s,%s)'%(str(bounds),str(fields))})
+        old_json = self._json
+        self._json = {'bit_start': self.used_bits(), 'bounds': bounds, 'fields':fields}
+        tag = self._int(bounds)
+        if tag not in fields:
+            return {"ERROR":"Choice '%s' does not exist in available fields '%s'" % (str(tag), str(fields))}
+        field = fields[tag]
+        retval = {field[0]: self.instance(field[1])}
+        self._json['value'] = retval
+        old_json['choice%i'%self.used_bits()] = self._json
+        self._json = old_json
+        return retval
+
+    def _fourcc(self):
+        old_json = self._json
+        self._json = {'bit_start': self.used_bits()}
+        self._markers.append({'at':self.used_bits(),'type':'blob'})
+        retval = self._buffer.read_unaligned_bytes(4)
+        old_json['fourcc%i'%self.used_bits()] = self._json
+        self._json = old_json
+        return retval
+
+    def _int(self, bounds):
+        old_json = self._json
+        self._json = {'bit_start': self.used_bits(), 'bounds': bounds, 'bits':self._buffer.peek_bits_as_bin_string(bounds[1])}
+        bitpos = self.used_bits()
+        retval = bounds[0] + self._buffer.read_bits(bounds[1])
+        self._markers.append({'at':bitpos,'type':'int(%s)=%i @ %s'%(str(bounds), retval, self._buffer.state())})
+        self._json['value'] = retval
+        old_json['int%i'%self.used_bits()] = self._json
+        self._json = old_json
+        return retval
+
+    def _null(self):
+        self._markers.append({'at':self.used_bits(),'type':'null'})
+        return None
+
+    def _optional(self, typeid):
+        old_json = self._json
+        self._json = {'bit_start': self.used_bits(), 'typeid':typeid}
+        self._markers.append({'at':self.used_bits(),'type':'optional(%s)'%str(typeid)})
+        exists = self._bool()
+        retval = self.instance(typeid) if exists else None
+        old_json['optional%i'%self.used_bits()] = self._json
+        self._json = old_json
+        return retval
+
+    def _real32(self):
+        old_json = self._json
+        self._json = {'bit_start': self.used_bits()}
+        self._markers.append({'at':self.used_bits(),'type':'real32'})
+        retval = struct.unpack('>f', self._buffer.read_unaligned_bytes(4))
+        self._json['value'] = retval
+        old_json['real32%i'%self.used_bits()] = self._json
+        self._json = old_json
+        return retval
+
+    def _real64(self):
+        old_json = self._json
+        self._json = {'bit_start': self.used_bits()}
+        self._markers.append({'at':self.used_bits(),'type':'real64'})
+        retval = struct.unpack('>d', self._buffer.read_unaligned_bytes(8))
+        self._json['value'] = retval
+        old_json['real64%i'%self.used_bits()] = self._json
+        self._json = old_json
+        return retval
+
+    def _struct(self, fields):
+        old_json = self._json
+        self._json = {'bit_start': self.used_bits(), 'fields': fields}
+        self._markers.append({'at':self.used_bits(),'type':'struct(%s)'%str(fields)})
+        result = {}
+        for field in fields:
+            if field[0] == '__parent':
+                parent = self.instance(field[1])
+                if isinstance(parent, dict):
+                    result.update(parent)
+                elif len(fields) == 1:
+                    result = parent
+                else:
+                    result[field[0]] = parent
+            else:
+                result[field[0]] = self.instance(field[1])
+        old_json['struct%i'%self.used_bits()] = self._json
+        self._json = old_json
+        return result
+
+
 
 
 class VersionedDecoder:
@@ -309,3 +536,7 @@ class VersionedDecoder:
             self._buffer.read_aligned_bytes(8)
         elif skip == 9:  # vint
             self._vint()
+
+
+
+

@@ -4,6 +4,7 @@ from django.contrib import admin
 admin.autodiscover()
 
 import hello.views
+import api.views
 
 urlpatterns = patterns('',
     # Examples:
@@ -11,5 +12,7 @@ urlpatterns = patterns('',
     # url(r'^blog/', include('blog.urls')),
 
     url(r'^$', hello.views.index, name='index'),
+    url(r'^api', api.views.index, name='index'),
+
 
 )
