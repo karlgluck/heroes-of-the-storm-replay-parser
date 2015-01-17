@@ -203,6 +203,7 @@ typeinfos = [
     ('_struct',[[('m_playerId',1,0),('m_type',6,1),('m_userId',39,2),('m_slotId',39,3)]]),  #177
     ('_struct',[[('m_uint32_0',6,-4),('m_uint32_1',6,-3),('m_uint32_2',6,-2),('m_string',16,-1)]]),  #178 - struct in 71, 3 32-bit integers and a string with length specified by 7-bit int
     ('_struct',[[('m_uint2',20,-1)]]), #179 - opcode = 103
+    ('_struct',[[('m_posWorld',85,-1)]]), #180 - opcode = 104
 ]
 
 # Map from protocol NNet.Game.*Event eventid to (typeid, name)
@@ -292,6 +293,7 @@ game_event_types = {
     101: (72, 'NNet.Game.SGameUserLeaveEvent'),
     102: (163, 'NNet.Game.SGameUserJoinEvent'),
     103: (179, 'NNet.Game.SCommandManagerStateEvent'),
+    104: (180, 'NNet.Game.SCmdUpdateTargetPointEvent')
 }
 
 # The typeid of the NNet.Game.EEventId enum.
