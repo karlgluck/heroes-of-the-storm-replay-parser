@@ -1,8 +1,7 @@
-# Heroes of the Storm Replay Parser
-
+# Heroes of the Storm Replay Parser 
 Web service that returns a JSON description of a *.StormReplay file from Blizzard's game Heroes of the Storm. Developed by Karl Gluck.
 
-This code is built to be deployed to a Heroku instance, but can be run locally with foreman. See the [Heroku Getting Started](https://devcenter.heroku.com/articles/getting-started-with-python#introduction) for more information.
+This code is built to be deployed to a Heroku instance, but can be run locally with Ubuntu on either a virtual or a dedicated machine.
 
 This project is based on code from:
  * [S2Protocol](https://github.com/Blizzard/s2protocol)
@@ -15,6 +14,7 @@ It uses the following technologies:
  * [Celery distributed task queue](http://www.celeryproject.org/)
  * [Redis key-value data store](http://redis.io/)
  * [Heroku cloud application platform](https://www.heroku.com/)
+ * [Amazon S3](http://aws.amazon.com/s3/) for production API replay file & result storage
 
 Special thanks to Ben, the admin of [HOTS Logs](http://www.hotslogs.com), for helping me figure out the GameEvents binary format!
 
