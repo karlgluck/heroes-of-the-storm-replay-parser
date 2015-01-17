@@ -100,7 +100,7 @@ typeinfos = [
     ('_struct',[[('x',73,-2),('y',73,-1)]]),  #74
     ('_struct',[[('m_which',12,-2),('m_target',74,-1)]]),  #75
     ('_struct',[[('m_fileName',26,-5),('m_automatic',13,-4),('m_overwrite',13,-3),('m_name',9,-2),('m_description',25,-1)]]),  #76
-    ('_int',[(-2147483648,32)]),  #77 THIS MIGHT BE 31 BIT INSTEAD OF 32
+    ('_int',[(-2147483648,32)]),  #77 THIS MIGHT BE 31 BIT INSTEAD OF 32; mask=0x7ffffffff
     ('_struct',[[('x',77,-2),('y',77,-1)]]),  #78
     ('_struct',[[('m_point',78,-4),('m_time',77,-3),('m_verb',25,-2),('m_arguments',25,-1)]]),  #79
     ('_struct',[[('m_data',79,-1)]]),  #80
@@ -131,7 +131,7 @@ typeinfos = [
     ('_struct',[[('m_beacon',103,-9),('m_ally',103,-8),('m_flags',103,-7),('m_build',103,-6),('m_targetUnitTag',6,-5),('m_targetUnitSnapshotUnitLink',73,-4),('m_targetUnitSnapshotUpkeepPlayerId',103,-3),('m_targetUnitSnapshotControlPlayerId',103,-2),('m_targetPoint',104,-1)]]),  #105
     ('_struct',[[('m_speed',12,-1)]]),  #106
     ('_struct',[[('m_delta',103,-1)]]),  #107
-    ('_struct',[[('m_point',78,-3),('m_unit',6,-2),('m_pingedMinimap',13,-1)]]),  #108
+    ('_struct',[[('m_point',78,-4),('m_unit',6,-3),('m_pingedMinimap',13,-2),('m_uint32',77,-1)]]),  #108
     ('_struct',[[('m_verb',25,-2),('m_arguments',25,-1)]]),  #109
     ('_struct',[[('m_alliance',6,-2),('m_control',6,-1)]]),  #110
     ('_struct',[[('m_unitTag',6,-1)]]),  #111
