@@ -5,14 +5,9 @@ import os
 from celery import shared_task
 from celery.utils.log import get_task_logger
 
+from api.StormReplayParser import StormReplayParser
 
 log = get_task_logger(__name__)
-
-@shared_task
-def test(param):
-    return 'The test task executed with argument "%s" ' % param
-
-from api.StormReplayParser import StormReplayParser
 
 @shared_task
 def LocallyStoredReplayParsingTask(fileName):
