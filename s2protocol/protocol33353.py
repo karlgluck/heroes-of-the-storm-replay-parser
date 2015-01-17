@@ -29,11 +29,11 @@ typeinfos = [
     ('_int',[(0,6)]),  #3
     ('_int',[(0,14)]),  #4
     ('_int',[(0,22)]),  #5
-    ('_int',[(0,32)]),  #6
+    ('_int',[(0,32)]),  #6 - 32 bit int
     ('_choice',[(0,2),{0:('m_uint6',3),1:('m_uint14',4),2:('m_uint22',5),3:('m_uint32',6)}]),  #7
     ('_struct',[[('m_userId',2,-1)]]),  #8
     ('_blob',[(0,8)]),  #9
-    ('_int',[(0,8)]),  #10
+    ('_int',[(0,8)]),  #10 - 8 bit int
     ('_struct',[[('m_flags',10,0),('m_major',10,1),('m_minor',10,2),('m_revision',10,3),('m_build',6,4),('m_baseBuild',6,5)]]),  #11
     ('_int',[(0,3)]),  #12
     ('_bool',[]),  #13
@@ -77,8 +77,8 @@ typeinfos = [
     ('_struct',[[('m_allowedColors',47,-6),('m_allowedRaces',48,-5),('m_allowedDifficulty',47,-4),('m_allowedControls',48,-3),('m_allowedObserveTypes',49,-2),('m_allowedAIBuilds',50,-1)]]),  #51
     ('_array',[(0,5),51]),  #52
     ('_struct',[[('m_randomValue',6,-26),('m_gameCacheName',25,-25),('m_gameOptions',44,-24),('m_gameSpeed',12,-23),('m_gameType',12,-22),('m_maxUsers',2,-21),('m_maxObservers',2,-20),('m_maxPlayers',2,-19),('m_maxTeams',45,-18),('m_maxColors',3,-17),('m_maxRaces',46,-16),('m_maxControls',10,-15),('m_mapSizeX',10,-14),('m_mapSizeY',10,-13),('m_mapFileSyncChecksum',6,-12),('m_mapFileName',26,-11),('m_mapAuthorName',9,-10),('m_modFileSyncChecksum',6,-9),('m_slotDescriptions',52,-8),('m_defaultDifficulty',3,-7),('m_defaultAIBuild',0,-6),('m_cacheHandles',32,-5),('m_hasExtensionMod',13,-4),('m_isBlizzardMap',13,-3),('m_isPremadeFFA',13,-2),('m_isCoopMode',13,-1)]]),  #53
-    ('_optional',[1]),  #54
-    ('_optional',[2]),  #55
+    ('_optional',[1]),  #54 - optional 4 bit
+    ('_optional',[2]),  #55 - optional 5 bit
     ('_struct',[[('m_color',55,-1)]]),  #56
     ('_array',[(0,6),6]),  #57
     ('_array',[(0,9),6]),  #58
@@ -94,9 +94,9 @@ typeinfos = [
     ('_struct',[[('m_type',6,-3),('m_name',65,-2),('m_data',30,-1)]]),  #68
     ('_array',[(0,5),10]),  #69
     ('_struct',[[('m_signature',69,-2),('m_toonHandle',16,-1)]]),  #70
-    ('_struct',[[('m_gameFullyDownloaded',13,-8),('m_developmentCheatsEnabled',13,-7),('m_multiplayerCheatsEnabled',13,-6),('m_syncChecksummingEnabled',13,-5),('m_isMapToMapTransition',13,-4),('m_startingRally',13,-3),('m_debugPauseEnabled',13,-2),('m_baseBuildNum',6,-1)]]),  #71
+    ('_struct',[[ ('m_bool0',13,-11), ('m_bool1',13,-10), ('m_bool2',13,-9), ('m_bool3',13,-8), ('m_bool4',13,-7), ('m_bool5',13,-6), ('m_bool6',13,-5), ('m_bool7',13,-4), ('m_bool8',13,-3), ('m_bool9',13,-2), ('m_data',178,-1)]]),  #71
     ('_struct',[[]]),  #72
-    ('_int',[(0,16)]),  #73
+    ('_int',[(0,16)]),  #73 - 16 bit int
     ('_struct',[[('x',73,-2),('y',73,-1)]]),  #74
     ('_struct',[[('m_which',12,-2),('m_target',74,-1)]]),  #75
     ('_struct',[[('m_fileName',26,-5),('m_automatic',13,-4),('m_overwrite',13,-3),('m_name',9,-2),('m_description',25,-1)]]),  #76
@@ -109,9 +109,9 @@ typeinfos = [
     ('_optional',[82]),  #83
     ('_null',[]),  #84
     ('_struct',[[('x',81,-3),('y',81,-2),('z',77,-1)]]),  #85
-    ('_struct',[[('m_targetUnitFlags',10,-7),('m_timer',10,-6),('m_tag',6,-5),('m_snapshotUnitLink',73,-4),('m_snapshotControlPlayerId',54,-3),('m_snapshotUpkeepPlayerId',54,-2),('m_snapshotPoint',85,-1)]]),  #86
+    ('_struct',[[('m_targetUnitFlags',73,-7), ('m_timer',10,-6), ('m_tag',6,-5), ('m_snapshotUnitLink',73,-4), ('m_snapshotControlPlayerId',54,-3), ('m_snapshotUpkeepPlayerId',54,-2), ('m_snapshotPoint',85,-1)]]),  #86
     ('_choice',[(0,2),{0:('None',84),1:('TargetPoint',85),2:('TargetUnit',86),3:('Data',6)}]),  #87
-    ('_struct',[[('m_cmdFlags',81,-4),('m_abil',83,-3),('m_data',87,-2),('m_otherUnit',39,-1)]]),  #88
+    ('_struct',[[('m_uint22',5,-5), ('m_abil',83,-4), ('m_data',87,-3), ('m_otherUnit',39,-2), ('m_uint32',39,-1)]]),  #88
     ('_int',[(0,9)]),  #89
     ('_bitarray',[(0,9)]),  #90
     ('_array',[(0,9),89]),  #91
@@ -131,7 +131,7 @@ typeinfos = [
     ('_struct',[[('m_beacon',103,-9),('m_ally',103,-8),('m_flags',103,-7),('m_build',103,-6),('m_targetUnitTag',6,-5),('m_targetUnitSnapshotUnitLink',73,-4),('m_targetUnitSnapshotUpkeepPlayerId',103,-3),('m_targetUnitSnapshotControlPlayerId',103,-2),('m_targetPoint',104,-1)]]),  #105
     ('_struct',[[('m_speed',12,-1)]]),  #106
     ('_struct',[[('m_delta',103,-1)]]),  #107
-    ('_struct',[[('m_point',78,-3),('m_unit',6,-2),('m_pingedMinimap',13,-1)]]),  #108
+    ('_struct',[[('m_point',78,-4),('m_unit',6,-3),('m_pingedMinimap',13,-2),('m_uint32',77,-1)]]),  #108
     ('_struct',[[('m_verb',25,-2),('m_arguments',25,-1)]]),  #109
     ('_struct',[[('m_alliance',6,-2),('m_control',6,-1)]]),  #110
     ('_struct',[[('m_unitTag',6,-1)]]),  #111
@@ -201,21 +201,61 @@ typeinfos = [
     ('_array',[(0,10),77]),  #175
     ('_struct',[[('m_firstUnitIndex',6,0),('m_items',175,1)]]),  #176
     ('_struct',[[('m_playerId',1,0),('m_type',6,1),('m_userId',39,2),('m_slotId',39,3)]]),  #177
+    ('_struct',[[('m_uint32_0',6,-4),('m_uint32_1',6,-3),('m_uint32_2',6,-2),('m_string',16,-1)]]),  #178 - struct in 71, 3 32-bit integers and a string with length specified by 7-bit int
+    ('_struct',[[('m_uint2',20,-1)]]), #179 - opcode = 103
+    ('_struct',[[('m_posWorld',85,-1)]]), #180 - opcode = 104
+    ('_struct',[[('m_uint32',6,-1)]]), #181 - opcode = 110
+    ('_struct',[[('m_uint16_0',73,-7), ('m_uint8_1',10,-6), ('m_uint32_2',6,-5), ('m_uint16_3',73,-4), ('m_uint4_4',54,-3), ('m_uint4_5',54,-2), ('m_posWorld',85,-1)]]), #182 - opcode = 105
+    ('_struct',[[('m_uint32',6,-1)]]),  #183 - opcode = 25
+    ('_struct',[[('m_uint32',6,-2), ('m_bool',13,-1)]]),  #184 - opcode = 61 
+    ('_struct',[[('m_bool',13,-1)]]),  #185 - opcode = 112 
 ]
 
 # Map from protocol NNet.Game.*Event eventid to (typeid, name)
 game_event_types = {
+    #0: NNet.Game.SSetLobbySlotEvent = {int(0,4), choice(4 bits):
+    #       choice-0: int(0,8)
+    #       choice-1: optional(int(0,4))
+    #       choice-2: int(0,4)
+    #       choice-3: {optional(int(0,5))}
+    #       choice-4: {optional(int(0,8))}
+    #       choice-5: int(0,6)
+    #       choice-6: int(0,7)
+    #       choice-7: int(0,7)
+    #       choice-8: enum(2)
+    #       choice-9: int(0,32)
+    #       choice-10: string(length=int(0,7))
+    #       choice-11: string(length=int(0,7))
+    #       choice-12: string(length=int(0,7))
+    #       choice-13: array(length=int(0,9) of {int(0,32)}}
+    #       choice-14: optional(int(4))
+    #       choice-15: string(length=int(0,7))
+    #   }
+    #1: NNet.Game.SDropUserEvent = {int(0,4) enum(4)}
+    #2: NNet.Game.SStartGameEvent
+    #3: NNet.Game.SDropOurselvesEvent
+    #4: NNet.Game.SUserFinishedLoadingEvent
     5: (72, 'NNet.Game.SUserFinishedLoadingSyncEvent'),
+    #6: NNet.Game.SSetGameDurationEvent = {int(0,32)}
     7: (71, 'NNet.Game.SUserOptionsEvent'),
+    #8: NNet.Game.STurnEvent
     9: (64, 'NNet.Game.SBankFileEvent'),
     10: (66, 'NNet.Game.SBankSectionEvent'),
     11: (67, 'NNet.Game.SBankKeyEvent'),
     12: (68, 'NNet.Game.SBankValueEvent'),
     13: (70, 'NNet.Game.SBankSignatureEvent'),
     14: (75, 'NNet.Game.SCameraSaveEvent'),
+    #15: NNet.Game.SPauseGameEvent = {int(0,16)}
+    #16: NNet.Game.SUnpauseGameEvent = {int(0,16)}
+    #17: NNet.Game.SSingleStepGameEvent
+    #18: NNet.Game.SSetGameSpeedEvent = {enum(3)}
+    #19: NNet.Game.SAddGameSpeedEvent = {int(-0x80L,7 or 8)}
+    #20: NNet.Game.SReplayJumpEvent = {optional{int(0,32)}}
     21: (76, 'NNet.Game.SSaveGameEvent'),
     22: (72, 'NNet.Game.SSaveGameDoneEvent'),
     23: (72, 'NNet.Game.SLoadGameDoneEvent'),
+    #24: NNet.Game.SSessionCheatEvent = {{{type#77, type#77}, type#77, string(length=int(0,8)), string(length=int(0,8))}}
+    25: (183, 'NNet.Game.SCommandManagerResetEvent'),
     26: (80, 'NNet.Game.SGameCheatEvent'),
     27: (88, 'NNet.Game.SCmdEvent'),
     28: (96, 'NNet.Game.SSelectionDeltaEvent'),
@@ -232,6 +272,7 @@ game_event_types = {
     39: (111, 'NNet.Game.SUnitClickEvent'),
     40: (112, 'NNet.Game.SUnitHighlightEvent'),
     41: (113, 'NNet.Game.STriggerReplySelectedEvent'),
+    #42: HijackReplaySessionEvent = {array(length=int(0,5)) of {int(0,4), int(0,4)}, enum(1)}
     43: (118, 'NNet.Game.SHijackReplayGameEvent'),
     44: (72, 'NNet.Game.STriggerSkippedEvent'),
     45: (123, 'NNet.Game.STriggerSoundLengthQueryEvent'),
@@ -250,6 +291,7 @@ game_event_types = {
     58: (137, 'NNet.Game.STriggerMouseClickedEvent'),
     59: (138, 'NNet.Game.STriggerMouseMovedEvent'),
     60: (139, 'NNet.Game.SAchievementAwardedEvent'),
+    61: (184, 'NNet.Game.STriggerHotkeyPressedEvent'),
     62: (140, 'NNet.Game.STriggerTargetModeUpdateEvent'),
     63: (72, 'NNet.Game.STriggerPlanetPanelReplayEvent'),
     64: (141, 'NNet.Game.STriggerSoundtrackDoneEvent'),
@@ -264,6 +306,7 @@ game_event_types = {
     73: (72, 'NNet.Game.STriggerResearchPanelExitEvent'),
     74: (72, 'NNet.Game.STriggerResearchPanelPurchaseEvent'),
     75: (147, 'NNet.Game.STriggerResearchPanelSelectionChangedEvent'),
+    #76: ?
     77: (72, 'NNet.Game.STriggerMercenaryPanelExitEvent'),
     78: (72, 'NNet.Game.STriggerMercenaryPanelPurchaseEvent'),
     79: (148, 'NNet.Game.STriggerMercenaryPanelSelectionChangedEvent'),
@@ -289,6 +332,16 @@ game_event_types = {
     100: (162, 'NNet.Game.STriggerCutsceneConversationLineMissingEvent'),
     101: (72, 'NNet.Game.SGameUserLeaveEvent'),
     102: (163, 'NNet.Game.SGameUserJoinEvent'),
+    103: (179, 'NNet.Game.SCommandManagerStateEvent'),
+    104: (180, 'NNet.Game.SCmdUpdateTargetPointEvent'),
+    105: (182, 'NNet.Game.SCmdUpdateTargetUnitEvent'),
+    #106: NNet.Game.STriggerAnimLengthQueryByNameEvent = {int(0,16), int(0,32), int(0,32)}
+    #107: NNet.Game.STriggerAnimLengthQueryByPropsEvent = {int(0,16), int(0,32)}
+    #108: NNet.Game.STriggerAnimOffsetEvent = {int(0,16)}
+    #109: NNet.Game.SCatalogModifyEvent = {int(0,8), int(0,16), asciistring(length=int(0,8)), asciistring(length=int(0,8))}
+    110: (181, 'NNet.Game.SHeroTalentTreeSelectedEvent'),
+    #111: NNet.Game.STriggerProfilerLoggingFinishedEvent
+    112: (185, 'NNet.Game.SHeroTalentTreeSelectionPanelToggledEvent'), # note: untested. can't find a replay that actually uses this.
 }
 
 # The typeid of the NNet.Game.EEventId enum.

@@ -1,5 +1,6 @@
 from s2protocol.mpyq import mpyq
 from s2protocol import protocol15405
+from s2protocol.decoders import *
 import os
 
 class StormReplayParser:
@@ -134,8 +135,15 @@ class StormReplayParser:
         except AttributeError:
             generator = self.protocol.decode_replay_game_events_debug(self.mpq.read_file('replay.game.events'))
             self.replayGameEvents = []
-            for event in generator:
-                self.replayGameEvents.append(event)
+            try:
+                i = 0
+                for event in generator:
+                    event['index'] = i
+                    if (i >= 25000):
+                        return self.replayGameEvents
+                    i = i + 1
+            except CorruptedError as e:
+                self.replayGameEvents.append({'error': str(e)});
             return self.replayGameEvents
 
     def getReplayTrackerEvents(self):
