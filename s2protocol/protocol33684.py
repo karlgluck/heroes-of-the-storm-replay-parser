@@ -111,7 +111,7 @@ typeinfos = [
     ('_struct',[[('x',81,-3),('y',81,-2),('z',77,-1)]]),  #85
     ('_struct',[[('m_targetUnitFlags',73,-7), ('m_timer',10,-6), ('m_tag',6,-5), ('m_snapshotUnitLink',73,-4), ('m_snapshotControlPlayerId',54,-3), ('m_snapshotUpkeepPlayerId',54,-2), ('m_snapshotPoint',85,-1)]]),  #86
     ('_choice',[(0,2),{0:('None',84),1:('TargetPoint',85),2:('TargetUnit',86),3:('Data',6)}]),  #87
-    ('_struct',[[('m_uint22',5,-5), ('m_abil',83,-4), ('m_data',87,-3), ('m_otherUnit',39,-2), ('m_uint32',39,-1)]]),  #88
+    ('_struct',[[('m_uint23',186,-6), ('m_abil',83,-5), ('m_data',87,-4), ('m_uint32_0',6,-3),('m_otherUnit',39,-2), ('m_uint32_1',39,-1)]]),  #88
     ('_int',[(0,9)]),  #89
     ('_bitarray',[(0,9)]),  #90
     ('_array',[(0,9),89]),  #91
@@ -202,13 +202,14 @@ typeinfos = [
     ('_struct',[[('m_firstUnitIndex',6,0),('m_items',175,1)]]),  #176
     ('_struct',[[('m_playerId',1,0),('m_type',6,1),('m_userId',39,2),('m_slotId',39,3)]]),  #177
     ('_struct',[[('m_uint32_0',6,-4),('m_uint32_1',6,-3),('m_uint32_2',6,-2),('m_string',16,-1)]]),  #178 - struct in 71, 3 32-bit integers and a string with length specified by 7-bit int
-    ('_struct',[[('m_uint2',20,-1)]]), #179 - opcode = 103
+    ('_struct',[[('m_uint2',20,-2),('m_uint32',39,-1)]]), #179 - opcode = 103
     ('_struct',[[('m_posWorld',85,-1)]]), #180 - opcode = 104
     ('_struct',[[('m_uint32',6,-1)]]), #181 - opcode = 110
     ('_struct',[[('m_uint16_0',73,-7), ('m_uint8_1',10,-6), ('m_uint32_2',6,-5), ('m_uint16_3',73,-4), ('m_uint4_4',54,-3), ('m_uint4_5',54,-2), ('m_posWorld',85,-1)]]), #182 - opcode = 105
     ('_struct',[[('m_uint32',6,-1)]]),  #183 - opcode = 25
     ('_struct',[[('m_uint32',6,-2), ('m_bool',13,-1)]]),  #184 - opcode = 61 
     ('_struct',[[('m_bool',13,-1)]]),  #185 - opcode = 112 
+    ('_int',[(0,23)]),  #186 - 23 bit int
 ]
 
 # Map from protocol NNet.Game.*Event eventid to (typeid, name)
