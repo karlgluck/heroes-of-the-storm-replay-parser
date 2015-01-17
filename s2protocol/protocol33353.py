@@ -205,15 +205,7 @@ typeinfos = [
     ('_struct',[[('m_uint2',20,-1)]]), #179 - opcode = 103
     ('_struct',[[('m_posWorld',85,-1)]]), #180 - opcode = 104
     ('_struct',[[('m_uint32',6,-1)]]), #181 - opcode = 110
-    ('_struct',[[
-        ('m_uint16_0',73,-7),
-        ('m_uint8_1',10,-6),
-        ('m_uint32_2',6,-5),
-        ('m_uint16_3',73,-4),
-        ('m_uint4_4',54,-3),
-        ('m_uint4_5',54,-2),
-        ('m_posWorld',85,-1),
-    ]]), #182 - opcode = 105
+    ('_struct',[[('m_uint16_0',73,-7), ('m_uint8_1',10,-6), ('m_uint32_2',6,-5), ('m_uint16_3',73,-4), ('m_uint4_4',54,-3), ('m_uint4_5',54,-2), ('m_posWorld',85,-1)]]), #182 - opcode = 105
 ]
 
 # Map from protocol NNet.Game.*Event eventid to (typeid, name)
