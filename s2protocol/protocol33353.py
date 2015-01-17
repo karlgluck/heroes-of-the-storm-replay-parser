@@ -100,7 +100,7 @@ typeinfos = [
     ('_struct',[[('x',73,-2),('y',73,-1)]]),  #74
     ('_struct',[[('m_which',12,-2),('m_target',74,-1)]]),  #75
     ('_struct',[[('m_fileName',26,-5),('m_automatic',13,-4),('m_overwrite',13,-3),('m_name',9,-2),('m_description',25,-1)]]),  #76
-    ('_int',[(-2147483648,32)]),  #77 THIS MIGHT BE 31 BIT INSTEAD OF 32; mask=0x7ffffffff
+    ('_int',[(-2147483648,32)]),  #77
     ('_struct',[[('x',77,-2),('y',77,-1)]]),  #78
     ('_struct',[[('m_point',78,-4),('m_time',77,-3),('m_verb',25,-2),('m_arguments',25,-1)]]),  #79
     ('_struct',[[('m_data',79,-1)]]),  #80
@@ -213,17 +213,48 @@ typeinfos = [
 
 # Map from protocol NNet.Game.*Event eventid to (typeid, name)
 game_event_types = {
+    #0: NNet.Game.SSetLobbySlotEvent = {int(0,4), choice(4 bits):
+    #       choice-0: int(0,8)
+    #       choice-1: optional(int(0,4))
+    #       choice-2: int(0,4)
+    #       choice-3: {optional(int(0,5))}
+    #       choice-4: {optional(int(0,8))}
+    #       choice-5: int(0,6)
+    #       choice-6: int(0,7)
+    #       choice-7: int(0,7)
+    #       choice-8: enum(2)
+    #       choice-9: int(0,32)
+    #       choice-10: string(length=int(0,7))
+    #       choice-11: string(length=int(0,7))
+    #       choice-12: string(length=int(0,7))
+    #       choice-13: array(length=int(0,9) of {int(0,32)}}
+    #       choice-14: optional(int(4))
+    #       choice-15: string(length=int(0,7))
+    #   }
+    #1: NNet.Game.SDropUserEvent = {int(0,4) enum(4)}
+    #2: NNet.Game.SStartGameEvent
+    #3: NNet.Game.SDropOurselvesEvent
+    #4: NNet.Game.SUserFinishedLoadingEvent
     5: (72, 'NNet.Game.SUserFinishedLoadingSyncEvent'),
+    #6: NNet.Game.SSetGameDurationEvent = {int(0,32)}
     7: (71, 'NNet.Game.SUserOptionsEvent'),
+    #8: NNet.Game.STurnEvent
     9: (64, 'NNet.Game.SBankFileEvent'),
     10: (66, 'NNet.Game.SBankSectionEvent'),
     11: (67, 'NNet.Game.SBankKeyEvent'),
     12: (68, 'NNet.Game.SBankValueEvent'),
     13: (70, 'NNet.Game.SBankSignatureEvent'),
     14: (75, 'NNet.Game.SCameraSaveEvent'),
+    #15: NNet.Game.SPauseGameEvent = {int(0,16)}
+    #16: NNet.Game.SUnpauseGameEvent = {int(0,16)}
+    #17: NNet.Game.SSingleStepGameEvent
+    #18: NNet.Game.SSetGameSpeedEvent = {enum(3)}
+    #19: NNet.Game.SAddGameSpeedEvent = {int(-0x80L,7 or 8)}
+    #20: NNet.Game.SReplayJumpEvent = {optional{int(0,32)}}
     21: (76, 'NNet.Game.SSaveGameEvent'),
     22: (72, 'NNet.Game.SSaveGameDoneEvent'),
     23: (72, 'NNet.Game.SLoadGameDoneEvent'),
+    #24: NNet.Game.SSessionCheatEvent = {{{type#77, type#77}, type#77, string(length=int(0,8)), string(length=int(0,8))}}
     25: (183, 'NNet.Game.SCommandManagerResetEvent'),
     26: (80, 'NNet.Game.SGameCheatEvent'),
     27: (88, 'NNet.Game.SCmdEvent'),
@@ -241,6 +272,7 @@ game_event_types = {
     39: (111, 'NNet.Game.SUnitClickEvent'),
     40: (112, 'NNet.Game.SUnitHighlightEvent'),
     41: (113, 'NNet.Game.STriggerReplySelectedEvent'),
+    #42: HijackReplaySessionEvent = {array(length=int(0,5)) of {int(0,4), int(0,4)}, enum(1)}
     43: (118, 'NNet.Game.SHijackReplayGameEvent'),
     44: (72, 'NNet.Game.STriggerSkippedEvent'),
     45: (123, 'NNet.Game.STriggerSoundLengthQueryEvent'),
@@ -274,6 +306,7 @@ game_event_types = {
     73: (72, 'NNet.Game.STriggerResearchPanelExitEvent'),
     74: (72, 'NNet.Game.STriggerResearchPanelPurchaseEvent'),
     75: (147, 'NNet.Game.STriggerResearchPanelSelectionChangedEvent'),
+    #76: ?
     77: (72, 'NNet.Game.STriggerMercenaryPanelExitEvent'),
     78: (72, 'NNet.Game.STriggerMercenaryPanelPurchaseEvent'),
     79: (148, 'NNet.Game.STriggerMercenaryPanelSelectionChangedEvent'),
@@ -302,7 +335,12 @@ game_event_types = {
     103: (179, 'NNet.Game.SCommandManagerStateEvent'),
     104: (180, 'NNet.Game.SCmdUpdateTargetPointEvent'),
     105: (182, 'NNet.Game.SCmdUpdateTargetUnitEvent'),
+    #106: NNet.Game.STriggerAnimLengthQueryByNameEvent = {int(0,16), int(0,32), int(0,32)}
+    #107: NNet.Game.STriggerAnimLengthQueryByPropsEvent = {int(0,16), int(0,32)}
+    #108: NNet.Game.STriggerAnimOffsetEvent = {int(0,16)}
+    #109: NNet.Game.SCatalogModifyEvent = {int(0,8), int(0,16), asciistring(length=int(0,8)), asciistring(length=int(0,8))}
     110: (181, 'NNet.Game.SHeroTalentTreeSelectedEvent'),
+    #111: NNet.Game.STriggerProfilerLoggingFinishedEvent
     112: (185, 'NNet.Game.SHeroTalentTreeSelectionPanelToggledEvent'), # note: untested. can't find a replay that actually uses this.
 }
 
