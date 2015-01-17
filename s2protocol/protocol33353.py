@@ -207,7 +207,8 @@ typeinfos = [
     ('_struct',[[('m_uint32',6,-1)]]), #181 - opcode = 110
     ('_struct',[[('m_uint16_0',73,-7), ('m_uint8_1',10,-6), ('m_uint32_2',6,-5), ('m_uint16_3',73,-4), ('m_uint4_4',54,-3), ('m_uint4_5',54,-2), ('m_posWorld',85,-1)]]), #182 - opcode = 105
     ('_struct',[[('m_uint32',6,-1)]]),  #183 - opcode = 25
-    ('_struct',[[('m_uint32',6,-2), ('m_bool',13,-1)]]),  #184 - opcode = 61
+    ('_struct',[[('m_uint32',6,-2), ('m_bool',13,-1)]]),  #184 - opcode = 61 
+    ('_struct',[[('m_bool',13,-1)]]),  #185 - opcode = 112 
 ]
 
 # Map from protocol NNet.Game.*Event eventid to (typeid, name)
@@ -302,6 +303,7 @@ game_event_types = {
     104: (180, 'NNet.Game.SCmdUpdateTargetPointEvent'),
     105: (182, 'NNet.Game.SCmdUpdateTargetUnitEvent'),
     110: (181, 'NNet.Game.SHeroTalentTreeSelectedEvent'),
+    112: (185, 'NNet.Game.SHeroTalentTreeSelectionPanelToggledEvent'), # note: untested. can't find a replay that actually uses this.
 }
 
 # The typeid of the NNet.Game.EEventId enum.
