@@ -29,11 +29,11 @@ typeinfos = [
     ('_int',[(0,6)]),  #3
     ('_int',[(0,14)]),  #4
     ('_int',[(0,22)]),  #5
-    ('_int',[(0,32)]),  #6
+    ('_int',[(0,32)]),  #6 - 32 bit int
     ('_choice',[(0,2),{0:('m_uint6',3),1:('m_uint14',4),2:('m_uint22',5),3:('m_uint32',6)}]),  #7
     ('_struct',[[('m_userId',2,-1)]]),  #8
     ('_blob',[(0,8)]),  #9
-    ('_int',[(0,8)]),  #10
+    ('_int',[(0,8)]),  #10 - 8 bit int
     ('_struct',[[('m_flags',10,0),('m_major',10,1),('m_minor',10,2),('m_revision',10,3),('m_build',6,4),('m_baseBuild',6,5)]]),  #11
     ('_int',[(0,3)]),  #12
     ('_bool',[]),  #13
@@ -204,6 +204,7 @@ typeinfos = [
     ('_struct',[[('m_uint32_0',6,-4),('m_uint32_1',6,-3),('m_uint32_2',6,-2),('m_string',16,-1)]]),  #178 - struct in 71, 3 32-bit integers and a string with length specified by 7-bit int
     ('_struct',[[('m_uint2',20,-1)]]), #179 - opcode = 103
     ('_struct',[[('m_posWorld',85,-1)]]), #180 - opcode = 104
+    ('_struct',[[('m_uint32',6,-1)]]), #181 - opcode = 110
 ]
 
 # Map from protocol NNet.Game.*Event eventid to (typeid, name)
@@ -293,7 +294,8 @@ game_event_types = {
     101: (72, 'NNet.Game.SGameUserLeaveEvent'),
     102: (163, 'NNet.Game.SGameUserJoinEvent'),
     103: (179, 'NNet.Game.SCommandManagerStateEvent'),
-    104: (180, 'NNet.Game.SCmdUpdateTargetPointEvent')
+    104: (180, 'NNet.Game.SCmdUpdateTargetPointEvent'),
+    110: (181, 'NNet.Game.SHeroTalentTreeSelectedEvent'),
 }
 
 # The typeid of the NNet.Game.EEventId enum.
