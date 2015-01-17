@@ -96,7 +96,7 @@ typeinfos = [
     ('_struct',[[('m_signature',69,-2),('m_toonHandle',16,-1)]]),  #70
     ('_struct',[[ ('m_bool0',13,-11), ('m_bool1',13,-10), ('m_bool2',13,-9), ('m_bool3',13,-8), ('m_bool4',13,-7), ('m_bool5',13,-6), ('m_bool6',13,-5), ('m_bool7',13,-4), ('m_bool8',13,-3), ('m_bool9',13,-2), ('m_data',178,-1)]]),  #71
     ('_struct',[[]]),  #72
-    ('_int',[(0,16)]),  #73
+    ('_int',[(0,16)]),  #73 - 16 bit int
     ('_struct',[[('x',73,-2),('y',73,-1)]]),  #74
     ('_struct',[[('m_which',12,-2),('m_target',74,-1)]]),  #75
     ('_struct',[[('m_fileName',26,-5),('m_automatic',13,-4),('m_overwrite',13,-3),('m_name',9,-2),('m_description',25,-1)]]),  #76
@@ -205,6 +205,15 @@ typeinfos = [
     ('_struct',[[('m_uint2',20,-1)]]), #179 - opcode = 103
     ('_struct',[[('m_posWorld',85,-1)]]), #180 - opcode = 104
     ('_struct',[[('m_uint32',6,-1)]]), #181 - opcode = 110
+    ('_struct',[[
+        ('m_uint16_0',73,-7),
+        ('m_uint8_1',10,-6),
+        ('m_uint32_2',6,-5),
+        ('m_uint16_3',73,-4),
+        ('m_uint4_4',54,-3),
+        ('m_uint4_5',54,-2),
+        ('m_posWorld',85,-1),
+    ]]), #182 - opcode = 105
 ]
 
 # Map from protocol NNet.Game.*Event eventid to (typeid, name)
@@ -295,6 +304,7 @@ game_event_types = {
     102: (163, 'NNet.Game.SGameUserJoinEvent'),
     103: (179, 'NNet.Game.SCommandManagerStateEvent'),
     104: (180, 'NNet.Game.SCmdUpdateTargetPointEvent'),
+    105: (182, 'NNet.Game.SCmdUpdateTargetUnitEvent'),
     110: (181, 'NNet.Game.SHeroTalentTreeSelectedEvent'),
 }
 
