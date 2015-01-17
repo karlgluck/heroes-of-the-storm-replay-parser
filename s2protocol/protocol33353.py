@@ -206,7 +206,8 @@ typeinfos = [
     ('_struct',[[('m_posWorld',85,-1)]]), #180 - opcode = 104
     ('_struct',[[('m_uint32',6,-1)]]), #181 - opcode = 110
     ('_struct',[[('m_uint16_0',73,-7), ('m_uint8_1',10,-6), ('m_uint32_2',6,-5), ('m_uint16_3',73,-4), ('m_uint4_4',54,-3), ('m_uint4_5',54,-2), ('m_posWorld',85,-1)]]), #182 - opcode = 105
-    ('_struct',[[('m_sound',6,-1)]]),  #183 - opcode = 25
+    ('_struct',[[('m_uint32',6,-1)]]),  #183 - opcode = 25
+    ('_struct',[[('m_uint32',6,-2), ('m_bool',13,-1)]]),  #184 - opcode = 61
 ]
 
 # Map from protocol NNet.Game.*Event eventid to (typeid, name)
@@ -257,6 +258,7 @@ game_event_types = {
     58: (137, 'NNet.Game.STriggerMouseClickedEvent'),
     59: (138, 'NNet.Game.STriggerMouseMovedEvent'),
     60: (139, 'NNet.Game.SAchievementAwardedEvent'),
+    61: (184, 'NNet.Game.STriggerHotkeyPressedEvent'),
     62: (140, 'NNet.Game.STriggerTargetModeUpdateEvent'),
     63: (72, 'NNet.Game.STriggerPlanetPanelReplayEvent'),
     64: (141, 'NNet.Game.STriggerSoundtrackDoneEvent'),
