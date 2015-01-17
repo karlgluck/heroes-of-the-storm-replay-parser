@@ -139,7 +139,8 @@ class StormReplayParser:
                 i = 0
                 for event in generator:
                     event['index'] = i
-                    self.replayGameEvents.append(event)
+                    if (i >= 25000):
+                        return self.replayGameEvents
                     i = i + 1
             except CorruptedError as e:
                 self.replayGameEvents.append({'error': str(e)});

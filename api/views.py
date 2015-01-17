@@ -19,7 +19,7 @@ def index(request):
                 'map': srp.getMapName(),
                 'players': srp.getReplayPlayers(),
                 'chat': srp.getChat(),
-                #'game': srp.getReplayGameEvents(),
+                'game': srp.getReplayGameEvents(),
             })
         return HttpResponse(content, content_type="application/json")
 
