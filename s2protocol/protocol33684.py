@@ -18,6 +18,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
+# This protocol version first appeared on Jan 13, 2015 when Blizzard released
+# Open Beta of Heroes of the Storm.
+
 from decoders import *
 
 

@@ -42,7 +42,6 @@ If you visit `http://localhost:5000` with your browser, the app will now be runn
 
 ## Todo List
 
-* Protocol version 33684 (circa January 2015) - Closed Beta
 * Use Celery to parse replays asynchronously in worker threads using a Redis backing store
 * Store replays on S3
 * Protocol version 29666 (circa April 2014)
@@ -50,3 +49,4 @@ If you visit `http://localhost:5000` with your browser, the app will now be runn
 * Protocol version 31566 (circa August 2014)
 * Protocol version 31948 (circa September 2014)
 * Protocol version 32524 (circa October 2014)
+
