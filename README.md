@@ -39,3 +39,14 @@ foreman start web
 ```
 
 If you visit `http://localhost:5000` with your browser, the app will now be running. If you're running inside a virtual machine like I suggested, only the browser inside the VM will resolve localhost. It is possible to access the server from your host computer by using `ifconfig` to find the VM's ip address and typing `[ip]:5000` into the host's browser's address bar.
+
+## Todo List
+
+* Protocol version 33684 (circa January 2015) - Closed Beta
+* Use Celery to parse replays asynchronously in worker threads using a Redis backing store
+* Store replays on S3
+* Protocol version 29666 (circa April 2014)
+* Protocol version 30027 (circa May 2014)
+* Protocol version 31566 (circa August 2014)
+* Protocol version 31948 (circa September 2014)
+* Protocol version 32524 (circa October 2014)
