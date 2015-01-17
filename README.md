@@ -18,7 +18,7 @@ This code is currently insecure because it is in Django developer mode. Fix this
 
 ## Setup
 
-This server is intended to run on Linux and was developed on Ubuntu 14.04.1 LTS. I have gotten it to run on Windows just fine but it requires some tinkering and a lot of installed apps. It's *much* easier to just develop in a virtual machine with [Ubuntu](http://www.ubuntu.com) and [VMware Player](http://www.vmware.com/products/player).
+This server is intended to run on Linux and was developed on Ubuntu 14.04.1 LTS. I have gotten parts of it to run on Windows but it requires some tinkering and a lot of installed apps. It's *much* easier to just develop in a virtual machine with [Ubuntu](http://www.ubuntu.com) and [VMware Player](http://www.vmware.com/products/player). VMware Player is free, by the way. The 'trial' only applies if you activate pro features, which we don't need.
 
 To get started, grab a copy of this repository:
 
@@ -26,13 +26,19 @@ To get started, grab a copy of this repository:
 git clone https://github.com/karlgluck/heroes-of-the-storm-replay-parser.git
 ```
 
-If you haven't already, install the [Heroku Toolbelt](https://toolbelt.heroku.com/).
+If you haven't already, [install the Heroku Toolbelt](https://toolbelt.heroku.com/) and [get a Redis server running](http://redis.io/topics/quickstart).
 
 Follow [these instructions on Heroku](https://devcenter.heroku.com/articles/getting-started-with-python#declare-app-dependencies) to set up your environment for a local copy of a Python server.
 
 **Note:** When running `pip install` on Ubuntu for the first time, you may run into an [error with psycops](http://stackoverflow.com/questions/5420789/how-to-install-psycopg2-with-pip-on-python). Run `sudo apt-get install libpq-dev python-dev` to fix it.
 
-Once installation is complete, start up the server and test it using Foreman (the next step from the Heroku tutorial):
+Wait for installation to complete. Start up the Redis server in another terminal:
+
+```
+redis-server
+```
+
+Then, start up the replay parser web server and test it using Foreman (the next step from the Heroku tutorial):
 
 ```
 foreman start web
