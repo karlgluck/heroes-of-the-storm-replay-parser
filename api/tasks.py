@@ -45,7 +45,7 @@ def S3StoredReplayParsingTask(keyName):
     keyBase = splitKey[0]
     resultKeyName = keyBase + '/replay.json.gz'
 
-    #todo: duplicate limiting
+    # todo: duplicate request limiting
     log.info('Key='+keyName)
     s3 = boto.connect_s3()
     bucket = s3.get_bucket(os.environ.get('AWS_BUCKET_NAME'), validate=False)
@@ -53,9 +53,7 @@ def S3StoredReplayParsingTask(keyName):
     k = Key(bucket)
     k.key = keyName
 
-    #todo: is there a better way than just pretending the string is a file?
-    # try: https://chromium.googlesource.com/external/boto/+/refs/heads/master/boto/s3/keyfile.py
-    # It's possible we just need to read this to a temp file to save memory.
+    # todo: do we need to read this to an on-disk temp file to save memory?
     replayFile = cStringIO.StringIO(k.get_contents_as_string())
     srp = StormReplayParser(replayFile)
     log.info("Created StormReplayParser, getting data") 
@@ -68,15 +66,14 @@ def S3StoredReplayParsingTask(keyName):
         #'game': srp.getReplayGameEvents(),
     }
 
-    rk = Key(bucket)
-    rk.key = resultKeyName
-    rk.set_metadata('Content-Encoding', 'gzip')
+    resultKey = Key(bucket)
+    resultKey.key = resultKeyName
+    resultKey.set_metadata('Content-Encoding', 'gzip')
 
     out = cStringIO.StringIO()
     with gzip.GzipFile(fileobj=out, mode="w") as f:
         f.write(json.dumps(retval))
-    #rk.set_contents_from_string(out.getvalue())
-    rk.set_contents_from_file(out, rewind=True)
+    resultKey.set_contents_from_file(out, rewind=True)
     out.close()
 
     secondsToExpire = 1*60*60
@@ -84,7 +81,7 @@ def S3StoredReplayParsingTask(keyName):
         'response-content-encoding': 'gzip',
         'response-content-type': 'application/json',
     }
-    s3UrlToResultKey = rk.generate_url(secondsToExpire, 'GET', response_headers=responseHeaders)
+    s3UrlToResultKey = resultKey.generate_url(secondsToExpire, 'GET', response_headers=responseHeaders)
 
     log.info("Result: " + s3UrlToResultKey);
     log.info("Finished reading from StormReplay. Cleaning up.")
