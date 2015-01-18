@@ -63,7 +63,7 @@ def S3StoredReplayParsingTask(keyName):
         'map': srp.getMapName(),
         'players': srp.getReplayPlayers(),
         'chat': srp.getChat(),
-        #'game': srp.getReplayGameEvents(),
+        'game': srp.getReplayGameEvents(),
     }
 
     resultKey = Key(bucket)

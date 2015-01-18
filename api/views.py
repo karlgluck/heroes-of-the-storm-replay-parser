@@ -85,7 +85,7 @@ def processReplayThatWasUploadedToS3(request):
     # todo: do we need to validate bucket here?
     asyncResult = S3StoredReplayParsingTask.delay(key)
     content = json.dumps({
-        'result_url': request.build_absolute_uri('api/result?id={0}'.format(asyncResult.id))
+        'result_url': request.build_absolute_uri('result?id='+asyncResult.id)
     })
     return HttpResponse(content, content_type="application/json")
 
