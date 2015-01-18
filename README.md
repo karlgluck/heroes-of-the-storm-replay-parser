@@ -66,6 +66,8 @@ If you visit `http://localhost:5000` with your browser, the app will now be runn
 
 ## Todo List
 
+* Redo API design and make its operation clear / not hard-coded
+* Document global environment variables
 * API keys for request rate limiting
 * Protocol version 29666 (circa April 2014)
 * Protocol version 30027 (circa May 2014)
