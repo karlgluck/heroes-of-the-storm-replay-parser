@@ -49,10 +49,10 @@ redis-server
 * vm.overcommit_memory should be 1
 * Transparent huge pages must be disabled
 
-Once Redis is running, launch a Celery instance using `source start_celery_worker` or running this command from the root project directory in your virtual environment terminal:
+Once Redis is running, launch a Celery instance:
 
 ```
-celery -A webserver worker -l info
+foreman start worker
 ```
 
 Next, launch the replay parser web server using Foreman (the next step from the Heroku tutorial):
