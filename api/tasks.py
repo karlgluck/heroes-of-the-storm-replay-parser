@@ -9,6 +9,7 @@ from api.StormReplayParser import StormReplayParser
 
 import boto
 import StringIO
+import cStringIO
 
 import json
 import gzip
@@ -55,8 +56,7 @@ def S3StoredReplayParsingTask(keyName):
     #todo: is there a better way than just pretending the string is a file?
     # try: https://chromium.googlesource.com/external/boto/+/refs/heads/master/boto/s3/keyfile.py
     # It's possible we just need to read this to a temp file to save memory.
-    # also: use cStringIO instead
-    replayFile = StringIO.StringIO(k.get_contents_as_string())
+    replayFile = cStringIO.StringIO(k.get_contents_as_string())
     srp = StormReplayParser(replayFile)
     log.info("Created StormReplayParser, getting data") 
 
@@ -71,10 +71,12 @@ def S3StoredReplayParsingTask(keyName):
     rk = Key(bucket)
     rk.key = resultKeyName
     rk.set_metadata('Content-Encoding', 'gzip')
-    out = StringIO.StringIO()
+
+    out = cStringIO.StringIO()
     with gzip.GzipFile(fileobj=out, mode="w") as f:
         f.write(json.dumps(retval))
-    rk.set_contents_from_string(out.getvalue())
+    #rk.set_contents_from_string(out.getvalue())
+    rk.set_contents_from_file(out, rewind=True)
     out.close()
 
     secondsToExpire = 1*60*60
