@@ -66,8 +66,7 @@ If you visit `http://localhost:5000` with your browser, the app will now be runn
 
 ## Todo List
 
-* Use Celery to parse replays asynchronously in worker threads using a Redis backing store
-* Store replays on S3
+* API keys for request rate limiting
 * Protocol version 29666 (circa April 2014)
 * Protocol version 30027 (circa May 2014)
 * Protocol version 31566 (circa August 2014)
