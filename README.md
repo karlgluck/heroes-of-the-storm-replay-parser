@@ -15,6 +15,7 @@ It uses the following technologies:
  * [Redis key-value data store](http://redis.io/)
  * [Heroku cloud application platform](https://www.heroku.com/)
  * [Amazon S3](http://aws.amazon.com/s3/) for production API replay file & result storage
+ * [Boto](https://github.com/boto/boto)
 
 Special thanks to Ben, the admin of [HOTS Logs](http://www.hotslogs.com), for helping me figure out the GameEvents binary format!
 

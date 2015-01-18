@@ -46,7 +46,7 @@ def buildS3UploadFormPolicy(successActionRedirectUrl):
     policyDocument = ('{{"expiration":"{0}",'
                       ' "conditions": ['
                       '   {{"bucket": "{1}"}},'
-                      '   {{"acl": "public-read"}},'
+                      '   {{"acl": "private"}},'
                       '   ["eq", "$key", "{2}"],'
                       '   {{"success_action_redirect": "{3}"}},'
                       '   ["eq", "$Content-Type", "application/octet-stream"],'
@@ -62,7 +62,7 @@ def buildS3UploadFormPolicy(successActionRedirectUrl):
         'bucket': bucket,
         'key': key,
         'AWSAccessKeyId': os.environ.get('AWS_ACCESS_KEY_ID'),
-        'acl': 'public-read',
+        'acl': 'private',
         'success_action_redirect': successActionRedirectUrl,
         'policy': policy,
         'signature': signature,
