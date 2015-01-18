@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Replay Upload</title>   
+    </head>
+    <body>
+	<p>Select a <code>*.StormReplay</code> file to upload to S3.</p>
+        <form action="https://{{ s3.bucket }}.s3.amazonaws.com/" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="key" value="{{ s3.key }}" />
+            <input type="hidden" name="AWSAccessKeyId" value="{{ s3.AWSAccessKeyId }}" />
+            <input type="hidden" name="acl" value="{{ s3.acl }}" />
+            <input type="hidden" name="success_action_redirect" value="{{ s3.success_action_redirect }}" />
+            <input type="hidden" name="policy" value="{{ s3.policy }}" />
+            <input type="hidden" name="signature" value="{{ s3.signature }}" />
+            <input type="hidden" name="Content-Type" value="{{ s3.Content_Type }}" />
+            <p><input type="file" id="file" name="file" /></p>
+            <p><input type="submit" value="Upload to S3" /></p>
+        </form>
+    </body>
+</html> 

@@ -15,6 +15,7 @@ It uses the following technologies:
  * [Redis key-value data store](http://redis.io/)
  * [Heroku cloud application platform](https://www.heroku.com/)
  * [Amazon S3](http://aws.amazon.com/s3/) for production API replay file & result storage
+ * [Boto](https://github.com/boto/boto)
 
 Special thanks to Ben, the admin of [HOTS Logs](http://www.hotslogs.com), for helping me figure out the GameEvents binary format!
 
@@ -65,8 +66,9 @@ If you visit `http://localhost:5000` with your browser, the app will now be runn
 
 ## Todo List
 
-* Use Celery to parse replays asynchronously in worker threads using a Redis backing store
-* Store replays on S3
+* Redo API design and make its operation clear / not hard-coded
+* Document global environment variables
+* API keys for request rate limiting
 * Protocol version 29666 (circa April 2014)
 * Protocol version 30027 (circa May 2014)
 * Protocol version 31566 (circa August 2014)
