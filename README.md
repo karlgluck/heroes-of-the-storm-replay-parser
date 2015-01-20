@@ -93,7 +93,7 @@ The bucket you create for storing replays should have the following CORS configu
 </CORSConfiguration>
 ```
 
-The access and secret keys from above come from an Amazon user that you create for this project. DO NOT use your Amazon account root credentials and NEVER add these values to any public repository (don't check in your `.env` file, for example). Bad things that cost you a lot of money can happen if someone gets a hold of your secret key. You have been warned!
+The access and secret keys from above come from an Amazon user that you create for this project. DO NOT use your Amazon account root credentials and NEVER add these values to any public repository (don't check in your `.env` file, for example). Bad things that cost you a lot of money can happen if someone gets ahold of your secret key. You have been warned!
 
 The user needs to have permissions to access your bucket. To do this:
 * Go to your Security Credentials on AWS
