@@ -5,7 +5,7 @@ import os
 from celery import shared_task
 from celery.utils.log import get_task_logger
 
-from api.StormReplayParser import StormReplayParser
+from api.stormreplay import *
 
 import boto
 import StringIO
@@ -16,21 +16,19 @@ import gzip
 
 from boto.s3.key import Key
 
+# todo: task specific logging?
+# http://blog.mapado.com/task-specific-logging-in-celery/
 log = get_task_logger(__name__)
 
 @shared_task
 def LocallyStoredReplayParsingTask(fileName):
     log.info('File name='+fileName)
     replayFile = open(fileName)
-    srp = StormReplayParser(replayFile)
-    log.info("Created StormReplayParser, getting data") 
-    retval = {
-        'unique_match_id': srp.getUniqueMatchId(),
-        'map': srp.getMapName(),
-        'players': srp.getReplayPlayers(),
-        'chat': srp.getChat(),
-        #'game': srp.getReplayGameEvents(),
-    }
+    stormReader = StormReplayReader(replayFile)
+    log.info("Created StormReplayReader") 
+    stormAnalyzer = StormReplayAnalyzer(stormReader)
+    log.info("Created StormReplayAnalyzer") 
+    retval = stormAnalyzer.analyze();
     log.info("Finished reading from StormReplay. Cleaning up.")
     replayFile.close()
     os.remove(replayFile.name)
@@ -90,5 +88,3 @@ def S3StoredReplayParsingTask(keyName):
     }
 
 
-# todo: task specific logging?
-# http://blog.mapado.com/task-specific-logging-in-celery/
