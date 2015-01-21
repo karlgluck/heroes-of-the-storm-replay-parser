@@ -6,7 +6,6 @@ import os
 import json
 import datetime
 
-from StormReplayParser import StormReplayParser
 from tasks import LocallyStoredReplayParsingTask
 from tasks import S3StoredReplayParsingTask
 from tempfile import NamedTemporaryFile

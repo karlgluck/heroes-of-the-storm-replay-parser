@@ -12,7 +12,6 @@ urlpatterns = patterns('',
     # url(r'^blog/', include('blog.urls')),
 
     url(r'^$', hello.views.index, name='index'),
-    url(r'^api/?$', api.views.index, name='apiIndex'),
     url(r'^api/upload$', api.views.uploadToS3Page, name='uploadToS3Page'),
     url(r'^api/upload-form$', api.views.uploadToS3Form, name='uploadToS3Form'),
     url(r'^api/process$', api.views.processReplayThatWasUploadedToS3, name='uploadToS3Form'),
