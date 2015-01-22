@@ -157,3 +157,4 @@ class StormReplayParser:
                     event['m_unitTag'] = self.protocol.unit_tag(event['m_unitTagIndex'], event['m_unitTagRecycle'])
                 self.replayTrackerEvents.append(event)
             return self.replayTrackerEvents
+

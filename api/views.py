@@ -6,7 +6,6 @@ import os
 import json
 import datetime
 
-from StormReplayParser import StormReplayParser
 from tasks import LocallyStoredReplayParsingTask
 from tasks import S3StoredReplayParsingTask
 from tempfile import NamedTemporaryFile
@@ -16,25 +15,6 @@ import hmac, hashlib
 
 import random
 
-def index(request):
-    if request.method == "POST":
-        if not request.FILES.has_key('file'):
-            content = json.dumps({'error':'Missing "file" parameter with uploaded replay file data'})
-        else:
-            replayFile = request.FILES.get('file')
-            # replayFile might have an issue if it is >= 2.5 MB, but this should never be the case
-            # with .StormReplay files
-            srp = StormReplayParser(replayFile)
-            content = json.dumps({
-                'unique_match_id': srp.getUniqueMatchId(),
-                'map': srp.getMapName(),
-                'players': srp.getReplayPlayers(),
-                'chat': srp.getChat(),
-                'game': srp.getReplayGameEvents(),
-            })
-        return HttpResponse(content, content_type="application/json")
-
-    return render(request, 'api/file-upload.html', {})
 
 def buildS3UploadFormPolicy(successActionRedirectUrl):
  

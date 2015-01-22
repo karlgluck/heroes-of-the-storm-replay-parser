@@ -3,9 +3,8 @@ from __future__ import absolute_import
 import os
 
 from celery import shared_task
-from celery.utils.log import get_task_logger
 
-from api.StormReplayParser import StormReplayParser
+from stormreplay import *
 
 import boto
 import StringIO
@@ -14,24 +13,24 @@ import cStringIO
 import json
 import gzip
 
+from celery.utils.log import get_task_logger
+log = get_task_logger(__name__)
+
 from boto.s3.key import Key
 
-log = get_task_logger(__name__)
+def AnalyzeReplayFile (replayFile):
+    stormReader = StormReplayReader(replayFile)
+    log.info("Created StormReplayReader") 
+    stormAnalyzer = StormReplayAnalyzer(stormReader)
+    log.info("Created StormReplayAnalyzer") 
+    retval = stormAnalyzer.analyze();
+    return retval
 
 @shared_task
 def LocallyStoredReplayParsingTask(fileName):
     log.info('File name='+fileName)
     replayFile = open(fileName)
-    srp = StormReplayParser(replayFile)
-    log.info("Created StormReplayParser, getting data") 
-    retval = {
-        'unique_match_id': srp.getUniqueMatchId(),
-        'map': srp.getMapName(),
-        'players': srp.getReplayPlayers(),
-        'chat': srp.getChat(),
-        #'game': srp.getReplayGameEvents(),
-    }
-    log.info("Finished reading from StormReplay. Cleaning up.")
+    retval = AnalyzeReplayFile(replayFile)
     replayFile.close()
     os.remove(replayFile.name)
     return retval
@@ -55,16 +54,8 @@ def S3StoredReplayParsingTask(keyName):
 
     # todo: do we need to read this to an on-disk temp file to save memory?
     replayFile = cStringIO.StringIO(k.get_contents_as_string())
-    srp = StormReplayParser(replayFile)
-    log.info("Created StormReplayParser, getting data") 
-
-    retval = {
-        'unique_match_id': srp.getUniqueMatchId(),
-        'map': srp.getMapName(),
-        'players': srp.getReplayPlayers(),
-        'chat': srp.getChat(),
-        'game': srp.getReplayGameEvents(),
-    }
+    retval = AnalyzeReplayFile(replayFile)
+    # todo: close the original key?
 
     resultKey = Key(bucket)
     resultKey.key = resultKeyName
@@ -90,5 +81,3 @@ def S3StoredReplayParsingTask(keyName):
     }
 
 
-# todo: task specific logging?
-# http://blog.mapado.com/task-specific-logging-in-celery/

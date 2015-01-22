@@ -19,7 +19,31 @@
 # THE SOFTWARE.
 
 import struct
+import base64
 
+# A note on decoding blobs:
+#
+# The library Blizzard wrote has no distinction between strings and binary blobs
+# at the protocol level. Because the results are going to be formatted as JSON
+# and printed in utf-8 text, they must be properly encoded.
+#
+# I extended their decoders to support distinguishing these binary blobs. Every
+# blob will now return a dictionary instead of a string. This dictionary will
+# contain one or two members:
+#   * 'utf8' - A utf-8 decoded Unicode string representing the blob,
+#              created using Python's 'replace' option. This is what you expect
+#              a string to be.
+#   * 'base64' - A base-64 encoded version of the bytes from the blob. This member
+#                is present if and only if the blob cannot be decoded correctly
+#                into the utf8 member.
+#
+# This distinction is necessary because one cannot simply interpret all blobs
+# as base64, since strings would be unrecognizable, or as utf-8 Unicode, since
+# not all byte sequences form valid Unicode strings. This makes it easy to use
+# the most common case of just getting strings from the replay, but keeps it
+# possible to obtain the original binary blob by first checking for the base64
+# member, then decoding either it or utf8.
+    
 
 class TruncatedError(Exception):
     pass
@@ -149,6 +173,13 @@ class BitPackedDecoder:
     def _blob(self, bounds):
         length = self._int(bounds)
         result = self._buffer.read_aligned_bytes(length)
+        try:
+            result = {'utf8': result.decode('utf-8', 'strict')}
+        except UnicodeDecodeError:
+            result = {
+                'utf8': result.decode('utf-8', 'replace'),
+                'base64': base64.b64encode(result)
+            }
         return result
 
     def _bool(self):
@@ -289,6 +320,13 @@ class BitPackedDecoderDebug:
         self._json['bytes'] = ''.join('{:02x}'.format(ord(x)) for x in retval)
         old_json['blob%i'%self.used_bits()] = self._json
         self._json = old_json
+        try:
+            retval = {'utf8': retval.decode('utf-8', 'strict')}
+        except UnicodeDecodeError:
+            retval = {
+                'utf8': retval.decode('utf-8', 'replace'),
+                'base64': base64.b64encode(retval)
+            }
         return retval
 
     def _bool(self):
@@ -443,7 +481,15 @@ class VersionedDecoder:
     def _blob(self, bounds):
         self._expect_skip(2)
         length = self._vint()
-        return self._buffer.read_aligned_bytes(length)
+        result = self._buffer.read_aligned_bytes(length)
+        try:
+            result = {'utf8': result.decode('utf-8', 'strict')}
+        except UnicodeDecodeError:
+            result = {
+                'utf8': result.decode('utf-8', 'replace'),
+                'base64': base64.b64encode(result)
+            }
+        return result
 
     def _bool(self):
         self._expect_skip(6)
