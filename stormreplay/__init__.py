@@ -1,5 +1,5 @@
 __all__ = ['StormReplayReader', 'StormReplayAnalyzer']
 
-from reader import *
-from analyzer import *
+from reader import StormReplayReader
+from analyzer import StormReplayAnalyzer
 
