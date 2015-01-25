@@ -90,7 +90,7 @@ typeinfos = [
     ('_struct',[[('m_control',10,-14),('m_userId',54,-13),('m_teamId',1,-12),('m_colorPref',56,-11),('m_racePref',40,-10),('m_difficulty',3,-9),('m_aiBuild',0,-8),('m_handicap',0,-7),('m_observe',20,-6),('m_logoIndex',6,-5),('m_workingSetSlotId',21,-4),('m_rewards',57,-3),('m_toonHandle',16,-2),('m_licenses',58,-1)]]),  #59
     ('_array',[(0,5),59]),  #60
     #('_struct',[[('m_phase',12,-10),('m_maxUsers',2,-9),('m_maxObservers',2,-8),('m_slots',60,-7),('m_randomSeed',6,-6),('m_hostUserId',54,-5),('m_isSinglePlayer',13,-4),('m_gameDuration',6,-3),('m_defaultDifficulty',3,-2),('m_defaultAIBuild',0,-1)]]),  #61
-    ('_struct',[[('m_phase',12,-10),('m_maxUsers',2,-9),('m_maxObservers',2,-8)]]),  #61
+    ('_struct',[[('m_phase',12,-10),('m_maxUsers',2,-9),('m_maxObservers',2,-8),('m_slots',84,-7)]]),  #61
     ('_struct',[[('m_userInitialData',43,-3),('m_gameDescription',53,-2),('m_lobbyState',61,-1)]]),  #62
     #('_struct',[[('m_userInitialData',43,-3),('m_gameDescription',53,-2)]]),  #62
     ('_struct',[[('m_syncLobbyState',62,-1)]]),  #63
