@@ -68,9 +68,10 @@ typeinfos = [
     ('_optional',[6]),  #39
     ('_struct',[[('m_race',21,-1)]]),  #40
     ('_struct',[[('m_team',21,-1)]]),  #41
-    ('_struct',[[('m_name',9,-13),('m_clanTag',37,-12),('m_clanLogo',38,-11),('m_highestLeague',21,-10),('m_combinedRaceLevels',39,-9),('m_randomSeed',6,-8),('m_racePreference',40,-7),('m_teamPreference',41,-6),('m_testMap',13,-5),('m_testAuto',13,-4),('m_examine',13,-3),('m_customInterface',13,-2),('m_observe',20,-1)]]),  #42
+    #('_struct',[[('m_name',9,-13),('m_clanTag',37,-12),('m_clanLogo',38,-11),('m_highestLeague',21,-10),('m_combinedRaceLevels',39,-9),('m_randomSeed',6,-8),('m_racePreference',40,-7),('m_teamPreference',41,-6),('m_testMap',13,-5),('m_testAuto',13,-4),('m_examine',13,-3),('m_customInterface',13,-2),('m_observe',20,-1)]]),  #42
+    ('_struct',[[('m_name',9,-13),('m_clanTag',37,-12),('m_highestLeague',21,-11),('m_combinedRaceLevels',39,-10),('m_randomSeed',6,-9),('m_racePreference',40,-8),('m_teamPreference',41,-7),('m_testMap',13,-6),('m_testAuto',13,-5),('m_examine',13,-4),('m_customInterface',13,-3),('m_observe',20,-2),('garbage',187,-1)]]),  #42
     ('_array',[(0,5),42]),  #43
-    ('_struct',[[('m_lockTeams',13,-12),('m_teamsTogether',13,-11),('m_advancedSharedControl',13,-10),('m_randomRaces',13,-9),('m_battleNet',13,-8),('m_amm',13,-7),('m_competitive',13,-6),('m_noVictoryOrDefeat',13,-5),('m_fog',20,-4),('m_observers',20,-3),('m_userDifficulty',20,-2),('m_clientDebugFlags',17,-1)]]),  #44
+    ('_struct',[[('m_lockTeams',13,-12),('m_teamsTogether',13,-11),('m_advancedSharedControl',13,-10),('m_randomRaces',13,-9),('m_battleNet',13,-8),('m_amm',13,-7),('m_competitive',13,-6),('m_noVictoryOrDefeat',13,-5),('m_bool_0',13,-5),('m_bool_1',13,-5),('m_bool_2',13,-5),('m_fog',20,-4),('m_observers',20,-3),('m_userDifficulty',20,-2),('m_clientDebugFlags',17,-1)]]),  #44
     ('_int',[(1,4)]),  #45
     ('_int',[(1,8)]),  #46
     ('_bitarray',[(0,6)]),  #47
@@ -79,6 +80,7 @@ typeinfos = [
     ('_bitarray',[(0,7)]),  #50
     ('_struct',[[('m_allowedColors',47,-6),('m_allowedRaces',48,-5),('m_allowedDifficulty',47,-4),('m_allowedControls',48,-3),('m_allowedObserveTypes',49,-2),('m_allowedAIBuilds',50,-1)]]),  #51
     ('_array',[(0,5),51]),  #52
+    #('_struct',[[('m_randomValue',6,-26),('m_gameCacheName',25,-25),('m_gameOptions',44,-24),('m_gameSpeed',12,-23),('m_gameType',12,-22),('m_maxUsers',2,-21),('m_maxObservers',2,-20),('m_maxPlayers',2,-19),('m_maxTeams',45,-18),('m_maxColors',3,-17),('m_maxRaces',46,-16),('m_maxControls',10,-15),('m_mapSizeX',10,-14),('m_mapSizeY',10,-13),('m_mapFileSyncChecksum',6,-12),('m_mapFileName',26,-11),('m_mapAuthorName',9,-10),('m_modFileSyncChecksum',6,-9),('m_slotDescriptions',52,-8),('m_defaultDifficulty',3,-7),('m_defaultAIBuild',0,-6),('m_cacheHandles',32,-5),('m_hasExtensionMod',13,-4),('m_isBlizzardMap',13,-3),('m_isPremadeFFA',13,-2),('m_isCoopMode',13,-1)]]),  #53
     ('_struct',[[('m_randomValue',6,-26),('m_gameCacheName',25,-25),('m_gameOptions',44,-24),('m_gameSpeed',12,-23),('m_gameType',12,-22),('m_maxUsers',2,-21),('m_maxObservers',2,-20),('m_maxPlayers',2,-19),('m_maxTeams',45,-18),('m_maxColors',3,-17),('m_maxRaces',46,-16),('m_maxControls',10,-15),('m_mapSizeX',10,-14),('m_mapSizeY',10,-13),('m_mapFileSyncChecksum',6,-12),('m_mapFileName',26,-11),('m_mapAuthorName',9,-10),('m_modFileSyncChecksum',6,-9),('m_slotDescriptions',52,-8),('m_defaultDifficulty',3,-7),('m_defaultAIBuild',0,-6),('m_cacheHandles',32,-5),('m_hasExtensionMod',13,-4),('m_isBlizzardMap',13,-3),('m_isPremadeFFA',13,-2),('m_isCoopMode',13,-1)]]),  #53
     ('_optional',[1]),  #54 - optional 4 bit
     ('_optional',[2]),  #55 - optional 5 bit
@@ -87,8 +89,10 @@ typeinfos = [
     ('_array',[(0,9),6]),  #58
     ('_struct',[[('m_control',10,-14),('m_userId',54,-13),('m_teamId',1,-12),('m_colorPref',56,-11),('m_racePref',40,-10),('m_difficulty',3,-9),('m_aiBuild',0,-8),('m_handicap',0,-7),('m_observe',20,-6),('m_logoIndex',6,-5),('m_workingSetSlotId',21,-4),('m_rewards',57,-3),('m_toonHandle',16,-2),('m_licenses',58,-1)]]),  #59
     ('_array',[(0,5),59]),  #60
-    ('_struct',[[('m_phase',12,-10),('m_maxUsers',2,-9),('m_maxObservers',2,-8),('m_slots',60,-7),('m_randomSeed',6,-6),('m_hostUserId',54,-5),('m_isSinglePlayer',13,-4),('m_gameDuration',6,-3),('m_defaultDifficulty',3,-2),('m_defaultAIBuild',0,-1)]]),  #61
+    #('_struct',[[('m_phase',12,-10),('m_maxUsers',2,-9),('m_maxObservers',2,-8),('m_slots',60,-7),('m_randomSeed',6,-6),('m_hostUserId',54,-5),('m_isSinglePlayer',13,-4),('m_gameDuration',6,-3),('m_defaultDifficulty',3,-2),('m_defaultAIBuild',0,-1)]]),  #61
+    ('_struct',[[('m_phase',12,-10),('m_maxUsers',2,-9),('m_maxObservers',2,-8)]]),  #61
     ('_struct',[[('m_userInitialData',43,-3),('m_gameDescription',53,-2),('m_lobbyState',61,-1)]]),  #62
+    #('_struct',[[('m_userInitialData',43,-3),('m_gameDescription',53,-2)]]),  #62
     ('_struct',[[('m_syncLobbyState',62,-1)]]),  #63
     ('_struct',[[('m_name',16,-1)]]),  #64
     ('_blob',[(0,6)]),  #65
@@ -213,6 +217,7 @@ typeinfos = [
     ('_struct',[[('m_uint32',6,-2), ('m_bool',13,-1)]]),  #184 - opcode = 61 
     ('_struct',[[('m_bool',13,-1)]]),  #185 - opcode = 112 
     ('_int',[(0,23)]),  #186 - 23 bit int
+    ('_blob',[(11,0)]),  #187 - "a bunch of garbage", 11 bytes, in initData
 ]
 
 # Map from protocol NNet.Game.*Event eventid to (typeid, name)
