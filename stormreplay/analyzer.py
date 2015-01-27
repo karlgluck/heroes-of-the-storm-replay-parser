@@ -11,10 +11,15 @@ defaultFieldMappings = [
     #(('map','name'), 'getMapName'),
     #('players', 'getPlayers'),
     #('chat', 'getChat'),
-    (('raw','details'), 'getReplayDetails'),
-    (('raw','details'), 'getReplayInitData'),
+    #(('raw','details'), 'getReplayDetails'),
+    #(('raw','details'), 'getReplayInitData'),
     #(('raw','game_events'), 'getReplayGameEvents'),
     #(('raw','tracker_events'), 'getReplayTrackerEvents'),
+
+    (('raw','players_hero_array'), 'getPlayersHeroChoiceArray'),
+    (('raw','talents'), 'getTalents'),
+    #(('raw','selections'), 'getTalentSelectionGameEvents'),
+
     #(('raw','message_events'), 'getReplayMessageEvents'),
 ]
 
@@ -41,6 +46,14 @@ class StormReplayAnalyzer:
         log.info("Finished: " + str(retval));
         return retval
 
+    def getTalentSelectionGameEvents(self):
+        events = []
+        for event in self.reader.getReplayGameEvents():
+            if (event['_event'] != 'NNet.Game.SHeroTalentTreeSelectedEvent'):
+                continue
+            events.append(event)
+        return events
+
     def getReplayInitData(self):
         return self.reader.getReplayInitData();
 
@@ -63,6 +76,26 @@ class StormReplayAnalyzer:
             self.gameSpeed = 0
         return self.gameSpeed
 
+    def getTalents(self):
+        try:
+            return self.talents
+        except AttributeError:
+            self.talents = [[] for _ in xrange(10)]
+            replayVersion = self.reader.getReplayProtocolVersion()
+            try:
+                talentsReader = __import__('stormreplay.talents%s' % replayVersion, fromlist=['talents'])
+            except ImportError:
+                raise Exception('Unsupported StormReplay build number for talents: %i' % replayVersion);
+            generator = talentsReader.decode_game_events_talent_choices(self.reader.getReplayGameEvents(), self.getPlayersHeroChoiceArray());
+            for choice in generator:
+                self.talents[choice['_userid']].append({
+                    'seconds': self.gameloopToSeconds(choice['_gameloop']),
+                    'level': choice['m_level'],
+                    'name': choice['m_talentName'],
+                    'description': choice['m_talentDescription'],
+                    'index': choice['m_talentIndex'],
+                })
+        return self.talents
 
     def getMapName(self):
         try:
@@ -70,6 +103,15 @@ class StormReplayAnalyzer:
         except AttributeError:
             self.mapName = self.reader.getReplayDetails()['m_title']['utf8']
         return self.mapName
+
+    def getPlayersHeroChoiceArray(self):
+        try:
+            return self.playersHeroArray
+        except AttributeError:
+            self.playersHeroArray = [None] * 10
+            for i, player in enumerate(self.getPlayerSpawnInfo()):
+                self.playersHeroArray[i] = player['hero']
+        return self.playersHeroArray
 
     # returns array indexed by user ID
     def getPlayers(self):
@@ -92,7 +134,6 @@ class StormReplayAnalyzer:
             return self.playerSpawnInfo
         except AttributeError:
             self.playerSpawnInfo = [None] * 10
-            players = self.getReplayPlayers()
             playerIdToUserId = {}
             for event in self.getReplayTrackerEvents():
                 if event['_event'] == 'NNet.Replay.Tracker.SPlayerSetupEvent':
@@ -117,6 +158,12 @@ class StormReplayAnalyzer:
             self.utcTimestamp = (self.getReplayDetails()['m_timeUTC'] / 10000000) - 11644473600
             return self.utcTimestamp
 
+    def gameloopToSeconds(self, gameloop):
+        return gameloop / 16.0
+
+    def gameloopToTimestamp(self, gameloop):
+        return self.getMatchUTCTimestamp() + _gameloop / 16.0
+
     def getChat(self):
         try:
             return self.chat
@@ -127,7 +174,7 @@ class StormReplayAnalyzer:
                     continue
                 userId = messageEvent['_userid']['m_userId']
                 chatData = {
-                    't': self.getMatchUTCTimestamp() + messageEvent['_gameloop'] / 16,
+                    't': self.gameloopToTimestamp(messageEvent['_gameloop']),
                     'user': userId,
                     'msg': messageEvent['m_string']['utf8'],
                 }

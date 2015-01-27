@@ -24,7 +24,10 @@ class StormReplayReader:
         try:
             self.protocol = __import__('s2protocol' + '.protocol%s' % self.buildStormReplay, fromlist=['protocol2'])
         except ImportError:
-            raise Exception('Unsupported build number: %i' % self.buildStormReplay)
+            raise Exception('Unsupported StormReplay protocol build number: %i' % self.buildStormReplay)
+
+    def getReplayProtocolVersion(self):
+        return self.buildStormReplay
 
     def getReplayInitData(self):
         try:
