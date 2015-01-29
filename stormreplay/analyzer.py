@@ -18,6 +18,7 @@ defaultFieldMappings = [
 
     (('raw','players_hero_array'), 'getPlayersHeroChoiceArray'),
     (('raw','talents'), 'getTalents'),
+    (('raw','levels'), 'getTeamLevels'),
     #(('raw','selections'), 'getTalentSelectionGameEvents'),
 
     #(('raw','message_events'), 'getReplayMessageEvents'),
@@ -97,6 +98,82 @@ class StormReplayAnalyzer:
                 })
         return self.talents
 
+    def getTeamTalentTierTimes(self):
+        try:
+            return self.teamTalentTierTimes
+        except AttributeError:
+            teamTalentTierLevel = [[], []]
+            teamTalentTiersFirstPick = [[], []]
+            teamTalentTiersLastPick = [[], []]
+            players = self.getPlayers()
+            for playerIndex, playerTalentPicks in enumerate(self.getTalents()):
+                player = players[playerIndex]
+                for talentTierIndex, talentPick in enumerate(playerTalentPicks):
+                    talentPickTime = talentPick['seconds']
+                    teamIndex = player['m_teamId']
+
+                    tiersFirstPick = teamTalentTiersFirstPick[teamIndex]
+                    if (talentTierIndex >= len(tiersFirstPick)):
+                        tiersFirstPick.append(talentPickTime)
+                    elif (talentPickTime < tiersFirstPick[talentTierIndex]):
+                        tiersFirstPick[talentTierIndex] = talentPickTime
+
+                    tiersLastPick = teamTalentTiersLastPick[teamIndex]
+                    if (talentTierIndex >= len(tiersLastPick)):
+                        tiersLastPick.append(talentPickTime)
+                    elif (talentPickTime > tiersLastPick[talentTierIndex]):
+                        tiersLastPick[talentTierIndex] = talentPickTime
+
+                    if (talentTierIndex >= len(teamTalentTierLevel[teamIndex])):
+                        teamTalentTierLevel[teamIndex].append(talentPick['level'])
+                    else:
+                        teamTalentTierLevel[teamIndex][talentTierIndex] = talentPick['level']
+
+            self.teamTalentTierTimes = [[], []]
+            for teamIndex in xrange(2):
+                for talentTierIndex, level in enumerate(teamTalentTierLevel[teamIndex]):
+                    self.teamTalentTierTimes[teamIndex].append({
+                        'earliest': teamTalentTiersFirstPick[teamIndex][talentTierIndex],
+                        'latest': teamTalentTiersLastPick[teamIndex][talentTierIndex],
+                        'level': level,
+                    })
+
+        return self.teamTalentTierTimes
+
+    def getTeamLevels(self):
+        try:
+            return self.teamLevels
+        except AttributeError:
+            teamTalentTierTimes = self.getTeamTalentTierTimes()
+            self.teamLevels = [[], []]
+            for teamIndex in xrange(2):
+                talentTierTimes = teamTalentTierTimes[teamIndex]
+                levelTimes = [0] * talentTierTimes[-1]['level']
+                for firstTier, nextTier in zip(talentTierTimes, talentTierTimes[1:]):
+                    levelRange = nextTier['level'] - firstTier['level']
+                    for level in xrange(firstTier['level'], nextTier['level']+1):
+                        levelIndex = level-1
+                        lerp = float(level - firstTier['level']) / levelRange
+                        time = lerp * (nextTier['earliest'] - firstTier['earliest']) + firstTier['earliest']
+                        levelTimes[levelIndex] = time
+                levelToTalentTierInfo = {}
+                for tierInfo in talentTierTimes:
+                    levelToTalentTierInfo[str(tierInfo['level'])] = tierInfo
+                for levelIndex, time in enumerate(levelTimes):
+                    level = levelIndex + 1
+                    levelInfo = {
+                        'level': levelIndex + 1,
+                        'seconds': time,
+                        'is_talent_tier': False,
+                    }
+                    if levelToTalentTierInfo.has_key(str(level)):
+                        tierInfo = levelToTalentTierInfo[str(level)]
+                        levelInfo['is_talent_tier'] = True
+                        levelInfo['earliest_talent_picked_time'] = tierInfo['earliest']
+                        levelInfo['latest_talent_picked_time'] = tierInfo['latest']
+                    self.teamLevels[teamIndex].append(levelInfo)
+        return self.teamLevels
+
     def getMapName(self):
         try:
             return self.mapName
@@ -116,13 +193,13 @@ class StormReplayAnalyzer:
     # returns array indexed by user ID
     def getPlayers(self):
         try:
-            return self.replayPlayers
+            return self.players
         except AttributeError:
             self.players = [None] * 10
             for i, player in enumerate(self.getReplayDetails()['m_playerList']):
                 #TODO: confirm that m_workingSetSlotId == i always
                 toon = player['m_toon']
-                player['toon_id'] = "%i-%s-%i-%i" % (toon['m_region'], toon['m_programId'], toon['m_realm'], toon['m_id'])
+                player['m_toonId'] = "%i-%s-%i-%i" % (toon['m_region'], toon['m_programId'], toon['m_realm'], toon['m_id'])
                 # The m_controlPlayerId is the field value to reference this player in the tracker events
                 player['m_controlPlayerId'] = i+1
                 self.players[i] = player
