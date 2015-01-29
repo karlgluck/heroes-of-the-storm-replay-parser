@@ -318,11 +318,8 @@ def decode_game_events_talent_choices(game_events, player_selected_heroes):
         talent_index = event['m_uint32']
         for tier in range(0,currentTalentTier):
             talent_index -= len(hero_talents[tier][1])
-        log.info('Hero Name: "' + hero_name + '"; Tier: ' + str(currentTalentTier) + '"; talent index = "'+str(talent_index)+'"')
-        try:
-            talent_data = hero_talent_tier_info[1][talent_index]
-        except:
-            talent_data = ('unknown', 'unknown')
+
+        talent_data = hero_talent_tier_info[1][talent_index]
 
         yield {
             "_userid": player,
