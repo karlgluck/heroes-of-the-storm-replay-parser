@@ -8,6 +8,7 @@ from celery.utils.log import get_task_logger
 log = get_task_logger(__name__)
 
 defaultFieldMappings = [
+    (['info','protocol'], 'getReplayProtocolVersion'),
     #(('map','name'), 'getMapName'),
     #('players', 'getPlayers'),
     #('chat', 'getChat'),
@@ -16,9 +17,17 @@ defaultFieldMappings = [
     #(('raw','game_events'), 'getReplayGameEvents'),
     #(('raw','tracker_events'), 'getReplayTrackerEvents'),
 
-    (('raw','players_hero_array'), 'getPlayersHeroChoiceArray'),
-    (('raw','talents'), 'getTalents'),
-    (('raw','levels'), 'getTeamLevels'),
+    (['players', [], 'hero'], 'getPlayersHeroChoiceArray'),
+    #(['players', [], 'talents', [], {'name':'name'}], 'getTalents'),
+    (['players', [], 'talents'], 'getTalents'),
+    (['players', [], {'m_teamId': 'team'}], 'getPlayers'),
+    
+    #(('raw','players'), 'getPlayers'),
+
+    #(('players', [], 'name'), 'getPlayerNames'),
+    #(('players', [], {}), 'getPlayerInfo'),
+
+
     #(('raw','selections'), 'getTalentSelectionGameEvents'),
 
     #(('raw','message_events'), 'getReplayMessageEvents'),
@@ -33,18 +42,60 @@ class StormReplayAnalyzer:
         if fieldMappings is None:
             fieldMappings = defaultFieldMappings
         retval = {}
-        log.info("fieldMappings = " + str(fieldMappings));
         for field in fieldMappings:
-            obj = retval
-            keyPath = field[0]
-            if (isinstance(keyPath, basestring)):
-                key = keyPath
-            else:
-                for key in keyPath[:-1]:
-                    obj = obj.setdefault(key, {})
-                key = keyPath[-1]
-            obj[key] = getattr(self, field[1])()
-        log.info("Finished: " + str(retval));
+            value = getattr(self, field[1])()
+            worklist = [(retval, field[0], value)]
+            while len(worklist) > 0:
+                workItem = worklist.pop()
+                obj = workItem[0]
+                keyPath = workItem[1]
+                value = workItem[2]
+
+                key = keyPath[0]
+
+                #log.info (str(keyPath))
+
+                isArray = isinstance(key, (int, long)) 
+                if isArray and key >= len(obj):
+                    obj.extend([None]*(key + 1 - len(obj)))
+
+                if len(keyPath) == 1:
+                    obj[key] = value
+                elif isinstance(keyPath[1], basestring):
+                    if isArray:
+                        if obj[key] is None:
+                            obj[key] = {}
+                        obj = obj[key]
+                    else:
+                        obj = obj.setdefault(key, {})
+                    worklist.append( (obj, keyPath[1:], value) )
+                elif isinstance(keyPath[1], list):
+                    if isArray:
+                        if obj[key] is None:
+                            obj[key] = []
+                        obj = obj[key]
+                    else:
+                        obj = obj.setdefault(key, [])
+                    for index, element in enumerate(value):
+                        worklist.append( (obj, [index] + keyPath[2:], element) )
+                elif isinstance(keyPath[1], dict):
+                    if isArray:
+                        if obj[key] is None:
+                            obj[key] = {}
+                        obj = obj[key]
+                    else:
+                        obj = obj.setdefault(key, {})
+                    for dictKey in value:
+                        if 0 == len(keyPath[1]):
+                            keyToWrite = dictKey
+                        elif keyPath[1].has_key(dictKey):
+                            keyToWrite = keyPath[1][dictKey]
+                        else:
+                            continue
+                        worklist.append( (obj, [keyToWrite] + keyPath[2:], value[dictKey]) )
+                else:
+                    raise Exception('Key of invalid type: %s' % str(key))
+
         return retval
 
     def getTalentSelectionGameEvents(self):
@@ -55,20 +106,23 @@ class StormReplayAnalyzer:
             events.append(event)
         return events
 
+    def getReplayProtocolVersion(self):
+        return self.reader.getReplayProtocolVersion()
+
     def getReplayInitData(self):
-        return self.reader.getReplayInitData();
+        return self.reader.getReplayInitData()
 
     def getReplayDetails(self):
-        return self.reader.getReplayDetails();
+        return self.reader.getReplayDetails()
 
     def getReplayTrackerEvents(self):
-        return self.reader.getReplayTrackerEvents();
+        return self.reader.getReplayTrackerEvents()
 
     def getReplayGameEvents(self):
-        return self.reader.getReplayGameEvents();
+        return self.reader.getReplayGameEvents()
 
     def getReplayMessageEvents(self):
-        return self.reader.getReplayMessageEvents();
+        return self.reader.getReplayMessageEvents()
 
     def getGameSpeed(self):
         try:
@@ -86,8 +140,8 @@ class StormReplayAnalyzer:
             try:
                 talentsReader = __import__('stormreplay.talents%s' % replayVersion, fromlist=['talents'])
             except ImportError:
-                raise Exception('Unsupported StormReplay build number for talents: %i' % replayVersion);
-            generator = talentsReader.decode_game_events_talent_choices(self.reader.getReplayGameEvents(), self.getPlayersHeroChoiceArray());
+                raise Exception('Unsupported StormReplay build number for talents: %i' % replayVersion)
+            generator = talentsReader.decode_game_events_talent_choices(self.reader.getReplayGameEvents(), self.getPlayersHeroChoiceArray())
             for choice in generator:
                 self.talents[choice['_userid']].append({
                     'seconds': self.gameloopToSeconds(choice['_gameloop']),
