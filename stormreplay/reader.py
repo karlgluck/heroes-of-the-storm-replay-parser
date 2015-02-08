@@ -16,6 +16,11 @@ class StormReplayReader:
 
     def __init__(self, replayFile):
 
+        relativeToEndOfFile = 2
+        replayFile.seek(0, relativeToEndOfFile)
+        self.replayFileByteSize = replayFile.tell()
+        replayFile.seek(0)
+
         # The replayFile can be either the name of a file or any object that has a 'read()' method.
         self.mpq = mpyq.MPQArchive(replayFile)
 
@@ -26,6 +31,9 @@ class StormReplayReader:
         except ImportError:
             raise Exception('Unsupported StormReplay protocol build number: %i' % self.buildStormReplay)
 
+    def getReplayFileByteSize(self):
+        return self.replayFileByteSize
+
     def getReplayProtocolVersion(self):
         return self.buildStormReplay
 
@@ -35,6 +43,14 @@ class StormReplayReader:
         except AttributeError:
             self.replayInitData = self.protocol.decode_replay_initdata(self.mpq.read_file('replay.initData'))
             return self.replayInitData
+
+    def getReplayAttributesEvents(self):
+        try:
+            return self.replayAttributesEvents
+        except AttributeError:
+            self.replayAttributesEvents = self.protocol.decode_replay_attributes_events(self.mpq.read_file('replay.attributes.events'))
+        return self.replayAttributesEvents
+        
 
     def getReplayDetails(self):
         try:

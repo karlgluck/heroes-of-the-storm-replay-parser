@@ -331,3 +331,36 @@ def decode_game_events_talent_choices(game_events, player_selected_heroes):
         }
 
         hero_talent_tier[player] += 1
+
+
+attribute_options = {
+     500: ('m_playerType', {'Comp': 'Computer', 'Humn': 'Human'}),
+    2001: ('m_teamSize', {'1v1': '1v1', '2v2': '2v2', '3v3': '3v3', '4v4':'4v4', '5v5': '5v5'}),
+    3000: ('m_gameSpeed', {'Slor': 'Slower', 'Slow': 'Slow', 'Norm': 'Normal', 'Fast': 'Fast', 'Fasr': 'Faster'}),
+    3001: ('m_playerRace', {}),
+    3002: ('m_playerColor', {}),
+    3003: ('m_handicap', {}),
+    3004: ('m_difficultyLevel', {'VyEy': 'Very Easy', 'Easy': 'Easy', 'Medi': 'Medium', 'Hard': 'Hard', 'VyHd': 'Very Hard', 'Insa': 'Insane'}),
+    3009: ('m_gameType', {'Priv': 'Custom', 'Amm': 'Quick Match'}),
+    4002: ('m_hero', {'Rand': 'Autoselect', 'Malf': 'Malfurion', 'Zaga': 'Zagara', 'LiLi': 'LiLi', 'Rehg': 'Rehgar', 'Tych': 'Tychus', 'L90E': 'E.T.C', 'Mura':'Muradin', 'Arth': 'Arthas', 'Thra':'Thrall', 'Stit':'Stitches', 'Illi':'Illidan' }),
+    4003: ('m_heroSkin', {}),
+    4004: ('m_mount', {}),
+    4006: ('m_heroAttack', {'rang': 'Ranged', 'mele': 'Melee'}),
+    4007: ('m_heroRole', {'spec': 'Specialist', 'supp': 'Support', 'assa': 'Assassin', 'warr': 'Warrior'}),
+    4008: ('m_characterLevel', {}),
+    4010: ('m_heroSelectionMode', {'stan': 'Free Pick', 'drft': 'Draft'}),
+}
+
+def translate_replay_attributes_events(replay_attributes_events):
+    scopes = replay_attributes_events['scopes']
+    retval = {}
+    for player_number in scopes:
+        player_attributes = scopes[player_number]
+        player = retval.setdefault(player_number, {})
+        for attribute in player_attributes:
+            value = str(player_attributes[attribute][0]['value']).strip()
+            mapping = attribute_options.get(int(attribute), ('m_attrId_' + str(attribute), {}))
+            player[mapping[0]] = mapping[1].get(value, value)
+    return retval
+
+    

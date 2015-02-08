@@ -8,7 +8,22 @@ from celery.utils.log import get_task_logger
 log = get_task_logger(__name__)
 
 defaultFieldMappings = [
-    (['info','protocol'], 'getReplayProtocolVersion'),
+### SET
+    #(['info','protocol'], 'getReplayProtocolVersion'),
+    #(['info','bytes'], 'getReplayFileByteSize'),
+    (['info','gameloops'], 'getMatchLengthGameloops'),
+    (['info','seconds'], 'getMatchLengthSeconds'),
+    (['info','start_timestamp'], 'getMatchUTCTimestamp'),
+    (['info','speed'], 'getMatchSpeed'),
+
+    (('raw','players'), 'getPlayers'),
+
+    #(['players', [], 'talents'], 'getTalents'),
+    #(['players', [], {'m_teamId': 'team'}], 'getPlayers'),
+
+    #(('players', [], 'name'), 'getPlayerNames'),
+    #(('players', [], {}), 'getPlayerInfo'),
+
     #(('map','name'), 'getMapName'),
     #('players', 'getPlayers'),
     #('chat', 'getChat'),
@@ -16,21 +31,18 @@ defaultFieldMappings = [
     #(('raw','details'), 'getReplayInitData'),
     #(('raw','game_events'), 'getReplayGameEvents'),
     #(('raw','tracker_events'), 'getReplayTrackerEvents'),
+    #(('raw','attributes_events'), 'getReplayAttributesEvents'),
+    #(('raw','translated_attributes_events'), 'getTranslatedReplayAttributesEvents'),
 
-    (['players', [], 'hero'], 'getPlayersHeroChoiceArray'),
+    #(['players', [], 'hero'], 'getPlayersHeroChoiceArray'),
     #(['players', [], 'talents', [], {'name':'name'}], 'getTalents'),
-    (['players', [], 'talents'], 'getTalents'),
-    (['players', [], {'m_teamId': 'team'}], 'getPlayers'),
-    
-    #(('raw','players'), 'getPlayers'),
-
-    #(('players', [], 'name'), 'getPlayerNames'),
-    #(('players', [], {}), 'getPlayerInfo'),
 
 
     #(('raw','selections'), 'getTalentSelectionGameEvents'),
 
     #(('raw','message_events'), 'getReplayMessageEvents'),
+
+### SET
 ]
 
 class StormReplayAnalyzer:
@@ -52,8 +64,6 @@ class StormReplayAnalyzer:
                 value = workItem[2]
 
                 key = keyPath[0]
-
-                #log.info (str(keyPath))
 
                 isArray = isinstance(key, (int, long)) 
                 if isArray and key >= len(obj):
@@ -98,6 +108,9 @@ class StormReplayAnalyzer:
 
         return retval
 
+    def getReplayFileByteSize(self):
+        return self.reader.getReplayFileByteSize()
+
     def getTalentSelectionGameEvents(self):
         events = []
         for event in self.reader.getReplayGameEvents():
@@ -112,6 +125,9 @@ class StormReplayAnalyzer:
     def getReplayInitData(self):
         return self.reader.getReplayInitData()
 
+    def getReplayAttributesEvents(self):
+        return self.reader.getReplayAttributesEvents()
+
     def getReplayDetails(self):
         return self.reader.getReplayDetails()
 
@@ -124,6 +140,10 @@ class StormReplayAnalyzer:
     def getReplayMessageEvents(self):
         return self.reader.getReplayMessageEvents()
 
+    def getTranslatedReplayAttributesEvents(self):
+        talentsReader = self.getTalentsReader()
+        return talentsReader.translate_replay_attributes_events(self.getReplayAttributesEvents())
+
     def getGameSpeed(self):
         try:
             return self.gameSpeed
@@ -131,16 +151,23 @@ class StormReplayAnalyzer:
             self.gameSpeed = 0
         return self.gameSpeed
 
+    def getTalentsReader(self):
+        try:
+            return self.talentsReader
+        except AttributeError:
+            replayVersion = self.reader.getReplayProtocolVersion()
+            try:
+                self.talentsReader = __import__('stormreplay.talents%s' % replayVersion, fromlist=['talents'])
+            except ImportError:
+                raise Exception('Unsupported StormReplay build number for talents: %i' % replayVersion)
+        return self.talentsReader
+
     def getTalents(self):
         try:
             return self.talents
         except AttributeError:
             self.talents = [[] for _ in xrange(10)]
-            replayVersion = self.reader.getReplayProtocolVersion()
-            try:
-                talentsReader = __import__('stormreplay.talents%s' % replayVersion, fromlist=['talents'])
-            except ImportError:
-                raise Exception('Unsupported StormReplay build number for talents: %i' % replayVersion)
+            talentsReader = self.getTalentsReader()
             generator = talentsReader.decode_game_events_talent_choices(self.reader.getReplayGameEvents(), self.getPlayersHeroChoiceArray())
             for choice in generator:
                 self.talents[choice['_userid']].append({
@@ -269,7 +296,7 @@ class StormReplayAnalyzer:
             for event in self.getReplayTrackerEvents():
                 if event['_event'] == 'NNet.Replay.Tracker.SPlayerSetupEvent':
                     playerIdToUserId[event['m_playerId']] = event['m_userId']
-                elif event['_event'] == 'NNet.Replay.Tracker.SUnitBornEvent':
+                elif event['_event'] == 'NNet.Replay.Tracker.SUnitBornEvent' and (int(event['_gameloop']) > 0):
                     playerId = event['m_controlPlayerId']
                     if (playerIdToUserId.has_key(playerId)):
                         playerIndex = playerIdToUserId[playerId] # always playerId-1 so far, but this is safer
@@ -288,6 +315,13 @@ class StormReplayAnalyzer:
         except AttributeError:
             self.utcTimestamp = (self.getReplayDetails()['m_timeUTC'] / 10000000) - 11644473600
             return self.utcTimestamp
+
+    def getMatchLengthGameloops(self):
+        lastEvent = self.getReplayTrackerEvents()[-1]
+        return lastEvent['_gameloop']
+
+    def getMatchLengthSeconds(self):
+        return self.gameloopToSeconds(self.getMatchLengthGameloops())
 
     def gameloopToSeconds(self, gameloop):
         return gameloop / 16.0
