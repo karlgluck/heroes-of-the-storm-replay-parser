@@ -18,15 +18,18 @@ log = get_task_logger(__name__)
 
 from boto.s3.key import Key
 
-def AnalyzeReplayFile (replayFile, debug):
+def AnalyzeReplayFile (replayFile, fieldNames):
+
     stormReader = StormReplayReader(replayFile)
     log.info("Created StormReplayReader") 
+
     stormAnalyzer = StormReplayAnalyzer(stormReader)
     log.info("Created StormReplayAnalyzer") 
-    if debug:
-        retval = stormAnalyzer.analyze(StormReplayAnalyzer.getDebugFieldMappings())
-    else:
-        retval = stormAnalyzer.analyze()
+
+    fieldMapping = StormReplayAnalyzer.getFieldMappingForNames(fieldNames) if len(fieldNames) > 0 else None
+
+    retval = stormAnalyzer.analyze(fieldMapping)
+
     return retval
 
 @shared_task

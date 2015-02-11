@@ -30,28 +30,34 @@ defaultFieldMappings = [
     (['raw','players'], 'getPlayers'),
     (['raw','details'], 'getReplayDetails'),
     (['raw','init_data'], 'getReplayInitData'),
-    #(['raw','game_events'], 'getReplayGameEvents'),
-    #(['raw','tracker_events'], 'getReplayTrackerEvents'),
-    #(['raw','attributes_events'], 'getReplayAttributesEvents'),
     #(['raw','translated_attributes_events'], 'getTranslatedReplayAttributesEvents'),
 
     #(['players', [], 'hero'], 'getPlayersHeroChoiceArray'),
 
-
-    #(['raw','selections'], 'getTalentSelectionGameEvents'),
-
-    #(['raw','message_events'], 'getReplayMessageEvents'),
 ]
 
-debugFieldMappings = [
-    (['raw','tracker_events'], 'getReplayTrackerEvents'),
-    (['raw','attributes_events'], 'getReplayAttributesEvents'),
-]
+named_field_mappings = {
+    'RawReplayDetails':             [(['raw','details'], 'getReplayDetails')],
+    'RawReplayInitData':            [(['raw','init_data'], 'getReplayInitData')],
+    'RawReplayTrackerEvents':       [(['raw','tracker_events'], 'getReplayTrackerEvents')],
+    'RawReplayAttributesEvents':    [(['raw','attributes_events'], 'getReplayAttributesEvents')],
+    'RawReplayGameEvents':          [(['raw','game_events'], 'getReplayGameEvents')],
+    'RawReplayMessageEvents':       [(['raw','message_events'], 'getReplayMessageEvents')],
+    'RawTalentSelectionGameEvents': [(['raw','selections'], 'getTalentSelectionGameEvents')],
+}
 
 class StormReplayAnalyzer:
 
-    def getDebugFieldMappings():
-        return debugFieldMappings
+    @staticmethod
+    def getAllFieldMappingNames():
+        return named_field_mappings.keys()
+
+    @staticmethod
+    def getFieldMappingForNames(names):
+        fieldMapping = []
+        for name in names:
+            fieldMapping = fieldMapping + named_field_mappings.get(name, [])
+        return fieldMapping
 
     def __init__(self, reader):
         self.reader = reader

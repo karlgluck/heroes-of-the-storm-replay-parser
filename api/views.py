@@ -6,6 +6,8 @@ import os
 import json
 import datetime
 
+from stormreplay import StormReplayAnalyzer
+
 from tasks import LocallyStoredReplayParsingTask
 from tasks import S3StoredReplayParsingTask
 from tempfile import NamedTemporaryFile
@@ -14,6 +16,7 @@ import base64
 import hmac, hashlib
 
 import random
+
 
 
 def buildS3UploadFormPolicy(successActionRedirectUrl):
@@ -69,9 +72,8 @@ def processReplayThatWasUploadedToS3(request):
     })
     return HttpResponse(content, content_type="application/json")
 
-
-
 def debug(request):
+    allFieldNames = StormReplayAnalyzer.getAllFieldMappingNames()
     if request.method == "POST":
         if not request.FILES.has_key('file'):
             content = json.dumps({'error':'Missing "file" parameter with uploaded replay file data'})
@@ -82,15 +84,17 @@ def debug(request):
                 savedReplayFile.write(chunk)
             savedReplayFileName = savedReplayFile.name
             savedReplayFile.close()
-            debug = bool(request.POST.get('debug', False))
-            asyncResult = LocallyStoredReplayParsingTask.delay(savedReplayFileName, debug)
+            fieldNamesToParse = []
+            for name in allFieldNames:
+                if bool(request.POST.get(name, False)):
+                    fieldNamesToParse.append(name)
+            asyncResult = LocallyStoredReplayParsingTask.delay(savedReplayFileName, fieldNamesToParse)
             content = json.dumps({
-                'debug': debug,
                 'result_url': request.META.get('HTTP_REFERER') + '/result?id=' + asyncResult.id,
             })
         return HttpResponse(content, content_type="application/json")
 
-    return render(request, 'api/file-upload.html', {})
+    return render(request, 'api/file-upload.html', {'all_field_names': allFieldNames})
 
 def getProcessedReplayResult(request):
     celeryTaskId = request.GET.get('id', '')
