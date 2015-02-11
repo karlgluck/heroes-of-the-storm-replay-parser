@@ -9,40 +9,38 @@ log = get_task_logger(__name__)
 
 defaultFieldMappings = [
 ### SET
-    #(['info','protocol'], 'getReplayProtocolVersion'),
-    #(['info','bytes'], 'getReplayFileByteSize'),
+    (['info','protocol'], 'getReplayProtocolVersion'),
+    (['info','bytes'], 'getReplayFileByteSize'),
     (['info','gameloops'], 'getMatchLengthGameloops'),
     (['info','seconds'], 'getMatchLengthSeconds'),
     (['info','start_timestamp'], 'getMatchUTCTimestamp'),
     (['info','speed'], 'getMatchSpeed'),
+    (['info','match_type'], 'getMatchType'),
+    (['info','hero_selelection_mode'], 'getHeroSelectionMode'),
 
-    (('raw','players'), 'getPlayers'),
+    (['map','name'], 'getMapName'),
+    (['map',{'m_mapSizeX':'width', 'm_mapSizeY':'height'}], 'getGameDescription'),
+    (['team', [], 'levels'], 'getTeamLevels'),
+
 
     #(['players', [], 'talents'], 'getTalents'),
-    #(['players', [], {'m_teamId': 'team'}], 'getPlayers'),
+    #(['players', [], 'talents', [], {'name':'name'}], 'getTalents'),
+    #(['players', [], {'m_teamId': 'team', 'm_name': 'name', 'm_toonId': 'toon_id'}], 'getPlayers'),
 
-    #(('players', [], 'name'), 'getPlayerNames'),
-    #(('players', [], {}), 'getPlayerInfo'),
-
-    #(('map','name'), 'getMapName'),
-    #('players', 'getPlayers'),
-    #('chat', 'getChat'),
-    #(('raw','details'), 'getReplayDetails'),
-    #(('raw','details'), 'getReplayInitData'),
-    #(('raw','game_events'), 'getReplayGameEvents'),
-    #(('raw','tracker_events'), 'getReplayTrackerEvents'),
-    #(('raw','attributes_events'), 'getReplayAttributesEvents'),
-    #(('raw','translated_attributes_events'), 'getTranslatedReplayAttributesEvents'),
+    (['raw','players'], 'getPlayers'),
+    (['raw','details'], 'getReplayDetails'),
+    (['raw','init_data'], 'getReplayInitData'),
+    #(['raw','game_events'], 'getReplayGameEvents'),
+    #(['raw','tracker_events'], 'getReplayTrackerEvents'),
+    #(['raw','attributes_events'], 'getReplayAttributesEvents'),
+    #(['raw','translated_attributes_events'], 'getTranslatedReplayAttributesEvents'),
 
     #(['players', [], 'hero'], 'getPlayersHeroChoiceArray'),
-    #(['players', [], 'talents', [], {'name':'name'}], 'getTalents'),
 
 
-    #(('raw','selections'), 'getTalentSelectionGameEvents'),
+    #(['raw','selections'], 'getTalentSelectionGameEvents'),
 
-    #(('raw','message_events'), 'getReplayMessageEvents'),
-
-### SET
+    #(['raw','message_events'], 'getReplayMessageEvents'),
 ]
 
 class StormReplayAnalyzer:
@@ -143,6 +141,10 @@ class StormReplayAnalyzer:
     def getTranslatedReplayAttributesEvents(self):
         talentsReader = self.getTalentsReader()
         return talentsReader.translate_replay_attributes_events(self.getReplayAttributesEvents())
+
+    def getGameDescription(self):
+        initData = self.getReplayInitData()
+        return initData['m_syncLobbyState']['m_gameDescription']
 
     def getGameSpeed(self):
         try:
@@ -281,7 +283,7 @@ class StormReplayAnalyzer:
                 #TODO: confirm that m_workingSetSlotId == i always
                 toon = player['m_toon']
                 player['m_toonId'] = "%i-%s-%i-%i" % (toon['m_region'], toon['m_programId'], toon['m_realm'], toon['m_id'])
-                # The m_controlPlayerId is the field value to reference this player in the tracker events
+                player['m_name'] = player['m_name']['utf8']
                 player['m_controlPlayerId'] = i+1
                 self.players[i] = player
             return self.players
@@ -308,6 +310,18 @@ class StormReplayAnalyzer:
                 if len(playerIdToUserId) == 0:
                     break
             return self.playerSpawnInfo
+
+    def getMatchSpeed(self):
+        attributes = self.getTranslatedReplayAttributesEvents()
+        return attributes[16]['m_gameSpeed']
+
+    def getMatchType(self):
+        attributes = self.getTranslatedReplayAttributesEvents()
+        return attributes[16]['m_gameType']
+
+    def getHeroSelectionMode(self):
+        attributes = self.getTranslatedReplayAttributesEvents()
+        return attributes[16]['m_heroSelectionMode']
 
     def getMatchUTCTimestamp(self):
         try:
