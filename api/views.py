@@ -102,6 +102,7 @@ def getProcessedReplayResult(request):
     if (result.status == 'FAILURE'):
         return HttpResponse(json.dumps({'status':'FAILURE','exception':str(result.result)}), content_type="application/json")
     if (result.status == 'SUCCESS'):
-        return HttpResponse(json.dumps({'status':'SUCCESS','data':result.get()}), content_type="application/json")
+        indentValue = int(request.GET.get('indent')) if request.GET.has_key('indent') else None
+        return HttpResponse(json.dumps({'status':'SUCCESS','data':result.get()},indent=indentValue), content_type="application/json")
     return HttpResponse(json.dumps({'status':'PENDING'}), content_type="application/json")
 
