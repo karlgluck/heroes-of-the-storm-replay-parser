@@ -43,7 +43,15 @@ defaultFieldMappings = [
     #(['raw','message_events'], 'getReplayMessageEvents'),
 ]
 
+debugFieldMappings = [
+    (['raw','tracker_events'], 'getReplayTrackerEvents'),
+    (['raw','attributes_events'], 'getReplayAttributesEvents'),
+]
+
 class StormReplayAnalyzer:
+
+    def getDebugFieldMappings():
+        return debugFieldMappings
 
     def __init__(self, reader):
         self.reader = reader

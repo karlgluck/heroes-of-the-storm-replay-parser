@@ -10,6 +10,7 @@
         <form action="{{ request.build_absolute_uri }}" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <p><input type="file" id="file" name="file" /></p>
+            <p><input type="checkbox" name="debug" value="True" /> Run debug mode</p>
             <p><input type="submit" value="Upload" /></p>
         </form>
     </body>

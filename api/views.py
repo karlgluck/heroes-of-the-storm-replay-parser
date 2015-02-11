@@ -82,9 +82,11 @@ def debug(request):
                 savedReplayFile.write(chunk)
             savedReplayFileName = savedReplayFile.name
             savedReplayFile.close()
-            asyncResult = LocallyStoredReplayParsingTask.delay(savedReplayFileName)
+            debug = bool(request.POST.get('debug', False))
+            asyncResult = LocallyStoredReplayParsingTask.delay(savedReplayFileName, debug)
             content = json.dumps({
-                'result_url': request.META.get('HTTP_REFERER') + '/result?id=' + asyncResult.id
+                'debug': debug,
+                'result_url': request.META.get('HTTP_REFERER') + '/result?id=' + asyncResult.id,
             })
         return HttpResponse(content, content_type="application/json")
 
