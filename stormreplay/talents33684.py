@@ -1,3 +1,4 @@
+import talents
 
 hero_talent_options = {
     "HeroAbathur": [
@@ -299,39 +300,9 @@ hero_talent_options = {
     ],
 }
 
-# todo: get this logger from elsewhere
-from celery.utils.log import get_task_logger
-log = get_task_logger(__name__)
-
 def decode_game_events_talent_choices(game_events, player_selected_heroes):
-    hero_talent_tier = [0] * 10
-    for event in game_events:
-        if (event['_event'] != 'NNet.Game.SHeroTalentTreeSelectedEvent'):
-            continue
-
-        player = event['_userid']['m_userId']
-        hero_name = player_selected_heroes[player]
-        hero_talents = hero_talent_options[hero_name]
-        currentTalentTier = hero_talent_tier[player]
-        hero_talent_tier_info = hero_talents[currentTalentTier]
-
-        talent_index = event['m_uint32']
-        for tier in range(0,currentTalentTier):
-            talent_index -= len(hero_talents[tier][1])
-
-        talent_data = hero_talent_tier_info[1][talent_index]
-
-        yield {
-            "_userid": player,
-            "_gameloop": event['_gameloop'],
-            "m_level": hero_talent_tier_info[0],
-            "m_talentName": talent_data[0],
-            "m_talentDescription": talent_data[1],
-            "m_talentIndex": talent_index,
-        }
-
-        hero_talent_tier[player] += 1
-
+    for choice in talents._decode_game_events_talent_choices(game_events, player_selected_heroes, hero_talent_options):
+        yield choice
 
 attribute_options = {
      500: ('m_playerType', {'Comp': 'Computer', 'Humn': 'Human'}),
@@ -342,7 +313,42 @@ attribute_options = {
     3003: ('m_handicap', {}),
     3004: ('m_difficultyLevel', {'VyEy': 'Very Easy', 'Easy': 'Easy', 'Medi': 'Medium', 'Hard': 'Hard', 'VyHd': 'Very Hard', 'Insa': 'Insane'}),
     3009: ('m_gameType', {'Priv': 'Custom', 'Amm': 'Quick Match'}),
-    4002: ('m_hero', {'Rand': 'Autoselect', 'Malf': 'Malfurion', 'Zaga': 'Zagara', 'LiLi': 'LiLi', 'Rehg': 'Rehgar', 'Tych': 'Tychus', 'L90E': 'E.T.C', 'Mura':'Muradin', 'Arth': 'Arthas', 'Thra':'Thrall', 'Stit':'Stitches', 'Illi':'Illidan' }),
+    4002: ('m_hero', {
+        'Abat': 'Abathur',
+        'Anub': 'Anubarak',
+        'Arth': 'Arthas',
+        'Azmo': 'Azmodan',
+        'Barb': 'Sonya',
+        'Chen': 'Chen',
+        'Demo': 'Valla',
+        'Diab': 'Diablo',
+        'Fals': 'Falstad',
+        'Illi': 'Illidan',
+        'Jain': 'Jaina',
+        'Kerr': 'Kerrigan',
+        'L90E': 'E.T.C',
+        'LiLi': 'Li Li',
+        'Faer': 'Brightwing',
+        'Malf': 'Malfurion',
+        'Mura': 'Muradin',
+        'Murk': 'Murky',
+        'Nova': 'Nova',
+        'Rand': 'Autoselect',
+        'Rayn': 'Raynor',
+        'Rehg': 'Rehgar',
+        'Sgth': 'Sgt. Hammer',
+        'Stit': 'Stitches',
+        'Tass': 'Tassadar',
+        'Thra': 'Thrall',
+        'Tink': 'Gazlowe',
+        'Tych': 'Tychus',
+        'Tyrd': 'Tyrande',
+        'Tyrl': 'Tyrael',
+        'Uthe': 'Uther',
+        'Witc': 'Nazeebo',
+        'Zaga': 'Zagara',
+        'Zera': 'Zeratul',
+        }),
     4003: ('m_heroSkin', {}),
     4004: ('m_mount', {}),
     4006: ('m_heroAttack', {'rang': 'Ranged', 'mele': 'Melee'}),
@@ -352,15 +358,5 @@ attribute_options = {
 }
 
 def translate_replay_attributes_events(replay_attributes_events):
-    scopes = replay_attributes_events['scopes']
-    retval = {}
-    for player_number in scopes:
-        player_attributes = scopes[player_number]
-        player = retval.setdefault(player_number, {})
-        for attribute in player_attributes:
-            value = str(player_attributes[attribute][0]['value']).strip()
-            mapping = attribute_options.get(int(attribute), ('m_attrId_' + str(attribute), {}))
-            player[mapping[0]] = mapping[1].get(value, value)
-    return retval
+    return talents._translate_replay_attributes_events(replay_attributes_events, attribute_options)
 
-    

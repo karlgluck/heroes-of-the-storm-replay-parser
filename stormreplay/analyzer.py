@@ -18,19 +18,12 @@ defaultFieldMappings = [
     (['info','match_type'], 'getMatchType'),
     (['info','hero_selelection_mode'], 'getHeroSelectionMode'),
 
-    (['map','name'], 'getMapName'),
-    (['map',{'m_mapSizeX':'width', 'm_mapSizeY':'height'}], 'getGameDescription'),
     (['team', [], 'levels'], 'getTeamLevels'),
 
 
-    #(['players', [], 'talents'], 'getTalents'),
     #(['players', [], 'talents', [], {'name':'name'}], 'getTalents'),
     #(['players', [], {'m_teamId': 'team', 'm_name': 'name', 'm_toonId': 'toon_id'}], 'getPlayers'),
 
-    (['raw','players'], 'getPlayers'),
-    (['raw','details'], 'getReplayDetails'),
-    (['raw','init_data'], 'getReplayInitData'),
-    #(['raw','translated_attributes_events'], 'getTranslatedReplayAttributesEvents'),
 
     #(['players', [], 'hero'], 'getPlayersHeroChoiceArray'),
 
@@ -44,6 +37,14 @@ named_field_mappings = {
     'RawReplayGameEvents':          [(['raw','game_events'], 'getReplayGameEvents')],
     'RawReplayMessageEvents':       [(['raw','message_events'], 'getReplayMessageEvents')],
     'RawTalentSelectionGameEvents': [(['raw','selections'], 'getTalentSelectionGameEvents')],
+
+    'RefTranslatedAttributesEvents':    [(['ref', 'translated_attributes_events'], 'getTranslatedReplayAttributesEvents')],
+    'RefPlayers':                       [(['ref','players'], 'getPlayers')],
+
+    'MapName': [(['map','name'], 'getMapName')],
+    'MapSize': [(['map',{'m_mapSizeX':'width', 'm_mapSizeY':'height'}], 'getGameDescription')],
+
+    'PlayerTalents': [(['players', [], 'talents'], 'getTalents')],
 }
 
 class StormReplayAnalyzer:
